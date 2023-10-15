@@ -1,0 +1,20 @@
+{
+  "name": "save-the-dragon",
+  "version": "1.0.0",
+  "description": "console game where you have to save the Dragon",
+  "main": "app.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node build/app.js",
+    "start:dev": "npx tsc & node build/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrii Yerzhykevych",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
