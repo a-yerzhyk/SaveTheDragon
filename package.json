@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "console game where you have to save the Dragon",
   "main": "app.ts",
+  "type": "module",
   "scripts": {
     "build": "npx tsc",
     "start": "node build/app.js",
-    "start:dev": "npx tsc & node build/app.js",
+    "start:dev": "npx nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Andrii Yerzhykevych",
