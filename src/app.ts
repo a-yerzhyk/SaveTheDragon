@@ -1,10 +1,19 @@
-import { PersonBuilder } from './classes/Person.js'
+import { HeroBuilder } from './classes/Person.js'
 import { GameMapGenerator } from './classes/GameMap.js'
-import { LOCATIONS } from './constants/locations.js';
+import { LOCATIONS, CONNECTIONS } from './constants/locations.js';
+import { HERO } from './constants/hero.js';
+import { ENEMIES } from './constants/enemies.js';
 import { SECTION, ITEMS } from './config/config.js';
 
+const gameConfig = {
+  hero: HERO,
+  enemies: ENEMIES,
+  locations: LOCATIONS,
+  locationConnections: CONNECTIONS,
+}
+
 function personTest () {
-    const personBuilder = new PersonBuilder()
+    const personBuilder = new HeroBuilder(1)
     const person = personBuilder
       .setName('John')
       .setHealth(100)
@@ -33,14 +42,15 @@ function personTest () {
 }
 
 function gameMapTest () {
-  const mapGenerator = new GameMapGenerator(LOCATIONS)
-  console.log(mapGenerator.maps.get(SECTION.SUBURB))
-  console.log(mapGenerator.maps.get(SECTION.TOWN))
-  console.log(mapGenerator.maps.get(SECTION.CASTLE))
+  const mapGenerator = new GameMapGenerator(LOCATIONS, CONNECTIONS)
+  // console.log(mapGenerator.maps.get(SECTION.SUBURB))
+  // console.log(mapGenerator.maps.get(SECTION.TOWN))
+  // console.log(mapGenerator.maps.get(SECTION.CASTLE))
+  console.log(mapGenerator.getGameMaps().get(SECTION.SUBURB)?.getLocation(2))
 }
 
 function gameStart () {
-  personTest()
+  // personTest()
   gameMapTest()
 }
 

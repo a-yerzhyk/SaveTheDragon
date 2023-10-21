@@ -1,64 +1,59 @@
-import { LocationID, LocationConfig, LocationConnectionConfig, Direction } from '../types/types.js';
+import {
+  LocationID,
+  PersonID,
+  LocationConfig,
+  LocationConnectionConfig,
+  Direction,
+  GameLocationConfig,
+  PersonConfig,
+  GameMapGraphConfig,
+  GameMapConfig
+} from '../types/types.js';
 import { SECTION } from '../config/config.js';
-
-const getOppositeDirection = (direction: Direction): Direction => {
-  switch (direction) {
-    case 't': return 'b';
-    case 'r': return 'l';
-    case 'b': return 't';
-    case 'l': return 'r';
-    case 'tr': return 'bl';
-    case 'tl': return 'br';
-    case 'br': return 'tl';
-    case 'bl': return 'tr';
-  }
-}
+import { getOppositeDirection } from '../utils/direction.js';
 
 export class GameMapGenerator {
-  gameMaps: Map<SECTION, GameMap>;
-  maps: Map<SECTION, GameLocation[]>;
+  private gameMaps: Map<SECTION, GameMapConfig>;
   
-  constructor(mapConfigs: Record<SECTION, Array<LocationConfig>>) {
-    this.gameMaps = new Map<SECTION, GameMap>()
-    this.maps = new Map<SECTION, GameLocation[]>()
+  constructor(mapConfigs: Record<SECTION, Array<LocationConfig>>, connectionsConfigs: Record<SECTION, Array<LocationConnectionConfig>>) {
+    this.gameMaps = new Map()
+
     for (let key in mapConfigs) {
-        const sectionKey = key as SECTION
-        const map = this.createLocations(mapConfigs[sectionKey])
-        this.maps.set(sectionKey, map)
+      const sectionKey = key as SECTION
+      const mapConfig = mapConfigs[sectionKey]
+      const connectionsConfig = connectionsConfigs[sectionKey]
+      const locations = this.createLocations(mapConfig)
+      const gameMap = new GameMap()
+      locations.forEach(location => {
+        gameMap.addLocation(location)
+      })
+      connectionsConfig.forEach(connection => {
+        gameMap.addPath(connection.locationID1, connection.locationID2, connection.direction)
+      })
+      this.gameMaps.set(sectionKey, gameMap)
     }
   }
 
-  createLocations(config: Array<LocationConfig>): GameLocation[] {
+  private createLocations(config: Array<LocationConfig>): GameLocationConfig[] {
     return config.map(locationConfig => {
       const location = new GameLocation(locationConfig);
-      return location;
+      return location
     })
   }
 
-  createGameMap() {
-    this.maps.forEach((locations, key) => {
-      const map = new GameMap();
-      locations.forEach(location => {
-        map.addLocation(location);
-      })
-      this.gameMaps.set(key, map);
-    })
-  }
-
-  createConnections(connectionsConfig: Record<SECTION, Array<LocationConnectionConfig>>) {
-    console.log('connectionsConfig:', connectionsConfig)
-    // TODO: create map connections
+  getGameMaps() {
+    return this.gameMaps;
   }
 }
 
-export class GameMap {
-  locations: Map<LocationID, GameLocation>;
+export class GameMap implements GameMapConfig, GameMapGraphConfig {
+  locations: Map<LocationID, GameLocationConfig>;
 
   constructor () {
-    this.locations = new Map<LocationID, GameLocation>()
+    this.locations = new Map();
   }
 
-  addLocation(location: GameLocation) {
+  addLocation(location: GameLocationConfig) {
     this.locations.set(location.id, location);
   }
 
@@ -76,12 +71,12 @@ export class GameMap {
   }
 }
 
-export class GameLocation {
-  id: LocationID;
-  type: string;
-  name: string;
-
-  linkedLocations: Array<{location: GameLocation, direction: Direction }> = [];
+export class GameLocation implements GameLocationConfig {
+  readonly id: LocationID;
+  readonly type: string;
+  readonly name: string;
+  readonly linkedLocations: Array<{location: GameLocation, direction: Direction }> = [];
+  readonly personsOnLocation: Map<PersonID, PersonConfig> = new Map<PersonID, PersonConfig>()
 
   constructor({ id, name, type }: LocationConfig) {
     this.id = id;
@@ -89,7 +84,17 @@ export class GameLocation {
     this.type = type;
   }
 
-  link (location: GameLocation, direction: Direction) {
+  addPerson(person: PersonConfig) {
+    this.personsOnLocation.set(person.id, person);
+  }
+
+  removePerson(personId: PersonID) {
+    const personToRemove = this.personsOnLocation.get(personId);
+    this.personsOnLocation.delete(personId);
+    return personToRemove
+  }
+
+  link (location: GameLocationConfig, direction: Direction) {
     this.linkedLocations.push({ location, direction });
   }
 }
