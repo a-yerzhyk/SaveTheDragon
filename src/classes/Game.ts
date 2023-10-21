@@ -1,29 +1,50 @@
 import {
   PersonConfig,
+  HeroConfig,
+  EnemyConfig,
   GameMapConfig,
   LocationConfig,
   LocationConnectionConfig,
   GameConfig,
   HeroC,
   EnemyC,
+  LocationID,
 } from "../types/types.js";
 import { HeroBuilder, Enemy } from "./Person.js";
 import { GameMapGenerator } from './GameMap.js'
-import { SECTION } from '../config/config.js';
 
-export class Game {
-  hero: PersonConfig
-  enemies: PersonConfig[]
+import { SECTION } from '../config/config.js';
+import { LOCATIONS, CONNECTIONS } from '../constants/locations.js';
+import { HERO } from '../constants/hero.js';
+import { ENEMIES } from '../constants/enemies.js';
+
+class Game {
+  hero: HeroConfig
+  enemies: EnemyConfig[]
   gameMaps: Map<SECTION, GameMapConfig>
 
   constructor(config: GameConfig) {
+    this.gameMaps = this.createGameMaps(config.locations, config.locationConnections)
     this.hero = this.createHero(config.hero)
     this.enemies = this.createEnemies(config.enemies)
-    this.gameMaps = this.createGameMaps(config.locations, config.locationConnections)
     this.setHeroLocation(config.hero.location.section, config.hero.location.locationId)
   }
 
-  private createHero(heroConfig: HeroC): PersonConfig {
+  moveEnemies() {
+    this.enemies.forEach(enemy => {
+      enemy.moveRandomly()
+    })
+  }
+
+  getSection(section: SECTION) {
+    return this.gameMaps.get(section)
+  }
+
+  getLocation(section: SECTION, locationId: LocationID) {
+    return this.gameMaps.get(section)?.getLocation(locationId)
+  }
+
+  private createHero(heroConfig: HeroC): HeroConfig {
     const hero = new HeroBuilder(heroConfig.id)
       .setName(heroConfig.name)
       .setHealth(heroConfig.health)
@@ -33,9 +54,10 @@ export class Game {
     return hero
   }
 
-  private createEnemies(enemiesConfig: EnemyC[]): PersonConfig[] {
+  private createEnemies(enemiesConfig: EnemyC[]): EnemyConfig[] {
     return enemiesConfig.map(enemyConfig => {
       const enemy = new Enemy(enemyConfig.id, enemyConfig.inventory, enemyConfig.type)
+      this.setEnemyLocation(enemy, enemyConfig.location)
       return enemy
     })
   }
@@ -49,9 +71,28 @@ export class Game {
     this.hero.currentLocation = this.gameMaps.get(section)?.getLocation(locationId)
   }
 
-  // private setEnemiesLocation(enemies: EnemyC[]) {
-  //   enemies.forEach(enemy => {
-  //      = this.gameMaps.get(enemy.location.section)?.getLocation(enemy.location.locationId)
-  //   })
-  // }
+  private setEnemyLocation(enemy: Enemy, locationConfig: EnemyC['location']) {
+    const location = this.gameMaps.get(locationConfig.section)?.getLocation(locationConfig.locationId)
+    if (!location) {
+      throw new Error(`Location ${locationConfig.locationId} not found in section ${locationConfig.section}`)
+    }
+    location.addPerson(enemy)
+    enemy.currentLocation = location
+  }
 }
+
+export class GameCreator {
+  createGame(config?: GameConfig) {
+    const gameConfig = config || defaultGameConfig
+    return new Game(gameConfig)
+  }
+}
+
+const defaultGameConfig = {
+  hero: HERO,
+  enemies: ENEMIES,
+  locations: LOCATIONS,
+  locationConnections: CONNECTIONS,
+}
+
+export default Game

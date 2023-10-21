@@ -15,6 +15,14 @@ export interface PersonConfig {
   increaceStrength: (amount: number) => void;
 }
 
+export interface HeroConfig extends PersonConfig {
+  move: (locationId: LocationID) => void;
+}
+
+export interface EnemyConfig extends PersonConfig {
+  moveRandomly: () => void;
+}
+
 export interface GameItemConfig {
   label: string;
   description: string;
@@ -29,6 +37,7 @@ export interface GameLocationConfig {
   id: LocationID;
   type: string;
   name: string;
+  section: SECTION;
   linkedLocations: Array<{location: GameLocationConfig, direction: Direction }>;
   personsOnLocation: Map<PersonID, PersonConfig>;
   addPerson: (person: PersonConfig) => void;

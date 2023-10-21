@@ -22,7 +22,7 @@ export class GameMapGenerator {
       const sectionKey = key as SECTION
       const mapConfig = mapConfigs[sectionKey]
       const connectionsConfig = connectionsConfigs[sectionKey]
-      const locations = this.createLocations(mapConfig)
+      const locations = this.createLocations(mapConfig, sectionKey)
       const gameMap = new GameMap()
       locations.forEach(location => {
         gameMap.addLocation(location)
@@ -34,9 +34,9 @@ export class GameMapGenerator {
     }
   }
 
-  private createLocations(config: Array<LocationConfig>): GameLocationConfig[] {
+  private createLocations(config: Array<LocationConfig>, section: SECTION): GameLocationConfig[] {
     return config.map(locationConfig => {
-      const location = new GameLocation(locationConfig);
+      const location = new GameLocation(locationConfig, section);
       return location
     })
   }
@@ -75,13 +75,15 @@ export class GameLocation implements GameLocationConfig {
   readonly id: LocationID;
   readonly type: string;
   readonly name: string;
-  readonly linkedLocations: Array<{location: GameLocation, direction: Direction }> = [];
+  readonly section: SECTION;
+  readonly linkedLocations: Array<{location: GameLocationConfig, direction: Direction }> = [];
   readonly personsOnLocation: Map<PersonID, PersonConfig> = new Map<PersonID, PersonConfig>()
 
-  constructor({ id, name, type }: LocationConfig) {
+  constructor({ id, name, type }: LocationConfig, section: SECTION) {
     this.id = id;
     this.name = name;
     this.type = type;
+    this.section = section;
   }
 
   addPerson(person: PersonConfig) {

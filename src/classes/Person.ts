@@ -6,6 +6,8 @@ import {
   InventoryItem,
   Inventory,
   PersonConfig,
+  HeroConfig,
+  EnemyConfig,
   GameLocationConfig,
   Direction,
   LocationID
@@ -88,13 +90,9 @@ export default class Person implements PersonConfig {
   increaceStrength(amount: number) {
     this.strength += amount;
   }
-
-  move (locationId: LocationID) {
-    throw new Error('Person cannot move!')
-  }
 }
 
-export class Enemy extends Person {
+export class Enemy extends Person implements EnemyConfig {
   type: ENEMY;
 
   constructor(id: PersonID, inventory: InventoryArray, type: ENEMY) {
@@ -104,34 +102,23 @@ export class Enemy extends Person {
     this.type = type;
   }
 
-  move (locationId: LocationID) {
-    console.log('Hero is moving')
-    const location = this.currentLocation
-    if (!location) return
-    const linkedLocation = location.linkedLocations.find(linked => linked.location.id === locationId)
-    if (!linkedLocation) return
-    location.removePerson(this.id)
-    linkedLocation.location.addPerson(this)
-    this.currentLocation = linkedLocation.location
-  }
-
   moveRandomly() {
     const location = this.currentLocation
     if (!location) return
     const linkedLocations = location.linkedLocations
     const randomIndex = Math.floor(Math.random() * linkedLocations.length)
-    const randomLocation = linkedLocations[randomIndex]
+    const randomLocation = linkedLocations[randomIndex].location
     location.removePerson(this.id)
-    randomLocation.location.addPerson(this)
-    this.currentLocation = randomLocation.location
+    randomLocation.addPerson(this)
+    console.log(`enemy ${this.id} moved from ${location.id} ${location.name} to ${randomLocation.id} ${randomLocation.name}`)
+    this.currentLocation = randomLocation
   }
 }
 
-export class Hero extends Person {
+export class Hero extends Person implements HeroConfig {
   currentLocationDirection: Direction = 'l';
 
   move (locationId: LocationID) {
-    console.log('Hero is moving')
     const location = this.currentLocation
     if (!location) return
     const enemiesCount = location?.personsOnLocation.size
