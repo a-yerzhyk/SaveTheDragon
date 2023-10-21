@@ -8,6 +8,10 @@ export interface PersonConfig {
   readonly id: PersonID;
   readonly name: string;
   currentLocation: GameLocationConfig | undefined;
+  getHealth: () => number;
+  getStrength: () => number;
+  getInventory: () => Inventory;
+  emptyInventory: () => { itemId: ITEMS; quantity: number; }[];
   giveItem: (itemId: ITEMS, quantity?: number) => void;
   useItem: (itemId: ITEMS) => void;
   heal: (amount: number) => void;
