@@ -17,7 +17,7 @@ import { LOCATIONS, CONNECTIONS } from '../constants/locations.js';
 import { HERO } from '../constants/hero.js';
 import { ENEMIES } from '../constants/enemies.js';
 
-class Game {
+export class Game {
   hero: HeroConfig
   enemies: EnemyConfig[]
   gameMaps: Map<SECTION, GameMapConfig>
@@ -93,5 +93,3 @@ const defaultGameConfig = {
   locations: LOCATIONS,
   locationConnections: CONNECTIONS,
 }
-
-export default Game

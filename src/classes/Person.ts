@@ -13,7 +13,7 @@ import {
   LocationID
 } from '../types/types.js';
 import { getOppositeDirection } from '../utils/direction.js';
-import EventsManager, { EVENTS } from './EventsManager.js';
+import { EventsManager, EVENTS } from './EventsManager.js';
 
 export default abstract class Person implements PersonConfig {
   readonly id: PersonID;

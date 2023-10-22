@@ -9,7 +9,7 @@ export const EVENTS: Record<Event, Event> = {
   increaceStrength: 'increaceStrength',
 }
 
-export default class EventsManager {
+export class EventsManager {
   private listeners: Map<Event, Array<Function>> = new Map();
   private static instance: EventsManager;
 
