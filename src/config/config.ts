@@ -15,6 +15,8 @@ export enum ENEMY {
   GUARD = 'guard',
 }
 
+export type HERO = 'hero';
+
 export const ENEMIES = {
   [ENEMY.SKELETON]: {
     name: ENEMY.SKELETON,

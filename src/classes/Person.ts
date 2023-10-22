@@ -1,5 +1,5 @@
 import { GameItemsFactory } from './GameItem.js'
-import { ITEMS, ENEMY, ENEMIES } from '../config/config.js';
+import { ITEMS, ENEMY, HERO, ENEMIES } from '../config/config.js';
 import {
   PersonID,
   InventoryArray,
@@ -13,21 +13,24 @@ import {
   LocationID
 } from '../types/types.js';
 import { getOppositeDirection } from '../utils/direction.js';
+import EventsManager, { EVENTS } from './EventsManager.js';
 
-export default class Person implements PersonConfig {
+export default abstract class Person implements PersonConfig {
   readonly id: PersonID;
   readonly name: string;
   private health: number;
   private strength: number;
   private readonly inventory: Inventory;
   currentLocation: GameLocationConfig | undefined;
+  type: ENEMY | HERO;
 
-  constructor (id: PersonID, name: string, health: number, strength: number, items: Inventory) {
+  constructor (id: PersonID, name: string, health: number, strength: number, items: Inventory, type: ENEMY | 'hero' = 'hero') {
     this.id = id;
     this.name = name;
     this.health = health;
     this.strength = strength;
     this.inventory = items;
+    this.type = type;
   }
 
   getHealth() {
@@ -63,6 +66,7 @@ export default class Person implements PersonConfig {
         quantity
       })
     }
+    EventsManager.getInstance().emit(EVENTS.giveItem, this.id, this.type, this.inventory)
   }
 
   useItem(itemId: ITEMS) {
@@ -76,10 +80,12 @@ export default class Person implements PersonConfig {
     } else {
       console.warn(`You do not have enought ${itemId}!`)
     }
+    EventsManager.getInstance().emit(EVENTS.useItem, this.id, this.type, this.inventory)
   }
 
   heal(amount: number) {
     this.health += amount;
+    EventsManager.getInstance().emit(EVENTS.heal, this.id, this.type, this.health)
   }
 
   damage(amount: number) {
@@ -88,21 +94,20 @@ export default class Person implements PersonConfig {
       return;
     }
     this.health -= amount;
+    EventsManager.getInstance().emit(EVENTS.damage, this.id, this.type, this.health)
   }
 
   increaceStrength(amount: number) {
     this.strength += amount;
+    EventsManager.getInstance().emit(EVENTS.increaceStrength, this.id, this.type, this.strength)
   }
 }
 
 export class Enemy extends Person implements EnemyConfig {
-  type: ENEMY;
-
   constructor(id: PersonID, inventory: InventoryArray, type: ENEMY) {
     const enemyConfig = ENEMIES[type]
     const enemyInventory = createInventory(inventory)
-    super(id, enemyConfig.name, enemyConfig.health, enemyConfig.strength, enemyInventory);
-    this.type = type;
+    super(id, enemyConfig.name, enemyConfig.health, enemyConfig.strength, enemyInventory, type);
   }
 
   moveRandomly() {
@@ -131,12 +136,13 @@ export class Hero extends Person implements HeroConfig {
     }
     this.currentLocation = linkedLocation.location
     this.currentLocationDirection = getOppositeDirection(linkedLocation.direction)
-    return this.currentLocation
+    EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentLocationDirection)
   }
 
   teleport (location: GameLocationConfig) {
     this.currentLocation = location
     this.currentLocationDirection = 'l'
+    EventsManager.getInstance().emit(EVENTS.move, this.id, this.type, this.currentLocation, this.currentLocationDirection)
   }
 }
 
