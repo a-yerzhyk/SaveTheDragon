@@ -1,5 +1,4 @@
 import {
-  PersonConfig,
   HeroConfig,
   EnemyConfig,
   GameMapConfig,
