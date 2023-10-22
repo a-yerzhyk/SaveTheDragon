@@ -43,22 +43,22 @@ export default class Person implements PersonConfig {
   }
 
   emptyInventory() {
-    const inventory = Array.from(this.inventory.entries()).map(([key, value]) => {
+    const inventory = this.inventory.map((value) => {
       return {
-        itemId: key,
+        itemId: value.item.type,
         quantity: value.quantity
       }
     })
-    this.inventory.clear();
+    this.inventory.splice(0, this.inventory.length);
     return inventory;
   }
 
   giveItem(itemId: ITEMS, quantity: number = 1) {
-    const inventoryItem = this.inventory.get(itemId)
+    const inventoryItem = this.inventory.find(item => item.item.type === itemId)
     if (inventoryItem) {
       inventoryItem.quantity += quantity;
     } else {
-      this.inventory.set(itemId, {
+      this.inventory.push({
         item: GameItemsFactory.createItem(itemId),
         quantity
       })
@@ -66,12 +66,15 @@ export default class Person implements PersonConfig {
   }
 
   useItem(itemId: ITEMS) {
-    const inventoryItem = this.inventory.get(itemId);
+    const inventoryItem = this.inventory.find(item => item.item.type === itemId);
     if (inventoryItem && inventoryItem.quantity) {
       inventoryItem.item.use(this);
       inventoryItem.quantity--;
+      if (inventoryItem.quantity <= 0) {
+        this.inventory.splice(this.inventory.indexOf(inventoryItem), 1);
+      }
     } else {
-      console.log(`You do not have enought ${itemId}!`)
+      console.warn(`You do not have enought ${itemId}!`)
     }
   }
 
@@ -110,7 +113,6 @@ export class Enemy extends Person implements EnemyConfig {
     const randomLocation = linkedLocations[randomIndex].location
     location.removePerson(this.id)
     randomLocation.addPerson(this)
-    console.log(`enemy ${this.id} moved from ${location.id} ${location.name} to ${randomLocation.id} ${randomLocation.name}`)
     this.currentLocation = randomLocation
   }
 }
@@ -143,7 +145,7 @@ export class HeroBuilder {
   private name: string = '';
   private health: number = 0;
   private strength: number = 0;
-  private inventory: Inventory = new Map();
+  private inventory: Inventory = [];
 
   constructor(id: PersonID) {
     this.id = id;
@@ -176,13 +178,7 @@ export class HeroBuilder {
 }
 
 function createInventory (inventory: InventoryArray) {
-  const inventoryArray: Array<[ITEMS, InventoryItem]> = [
-    ...inventory.map(item => {
-      return [
-        item.id,
-        { item: GameItemsFactory.createItem(item.id), quantity: item.quantity } as InventoryItem
-      ] as [ITEMS, InventoryItem]
-    })
-  ]
-  return new Map(inventoryArray)
+  return inventory.map(item => {
+    return { item: GameItemsFactory.createItem(item.id), quantity: item.quantity } as InventoryItem
+  })
 }

@@ -1,5 +1,5 @@
 import { ITEMS } from '../config/config.js';
-import { GameItemConfig, PersonConfig } from '../types/types.js';
+import { GameItemConfig, AbstractGameItemConfig, PersonConfig } from '../types/types.js';
 
 export class GameItemsFactory {
   static createItem(item: ITEMS) {
@@ -14,7 +14,7 @@ export class GameItemsFactory {
   }
 }
 
-export default class GameItem implements GameItemConfig {
+export default class GameItem implements AbstractGameItemConfig {
   label: string;
   description: string;
 
@@ -29,6 +29,8 @@ export default class GameItem implements GameItemConfig {
 }
 
 export class Bread extends GameItem implements GameItemConfig {
+  type: ITEMS = ITEMS.BREAD;
+
   constructor() {
     super(ITEMS.BREAD, 'A loaf of bread. Restores 10 health.');
   }
@@ -40,6 +42,8 @@ export class Bread extends GameItem implements GameItemConfig {
 }
 
 export class PotionOfPower extends GameItem implements GameItemConfig {
+  type: ITEMS = ITEMS.POTION_OF_POWER;
+
   constructor() {
     super(ITEMS.POTION_OF_POWER, 'A potion of power. Increase strength by 5.');
   }
