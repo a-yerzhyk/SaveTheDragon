@@ -35,7 +35,7 @@ export interface AbstractGameItemConfig {
 export interface GameItemConfig extends AbstractGameItemConfig {
   type: ITEMS;
 }
-export interface InventoryItem {
+export interface InventoryCell {
   item: GameItemConfig;
   quantity: number;
 }
@@ -75,7 +75,7 @@ export interface GameActionMovableConfig {
 
 export interface GameActionManagerConfig extends GameActionPersonActionsConfig, GameActionMovableConfig {}
 
-export type Inventory = Array<InventoryItem>;
+export type Inventory = Array<InventoryCell>;
 
 export type Direction = 't' | 'r' | 'b' | 'l' | 'tr' | 'tl' | 'br' | 'bl';
 
