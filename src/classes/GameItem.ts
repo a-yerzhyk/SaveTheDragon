@@ -30,14 +30,19 @@ export default class GameItem implements AbstractGameItemConfig {
 
 export class Bread extends GameItem implements GameItemConfig {
   type: ITEM = ITEM.BREAD;
+  private restoreHealth: number = 10;
 
   constructor() {
     super(ITEM.BREAD, 'A loaf of bread. Restores 10 health.');
   }
 
   use(hero: PersonConfig) {
+    if (hero.getHealth() === hero.getMaxHealth()) {
+      console.log('You are already at full health!');
+      return;
+    }
     super.use(hero);
-    hero.heal(10);
+    hero.heal(this.restoreHealth);
   }
 }
 
