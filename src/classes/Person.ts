@@ -142,7 +142,8 @@ export class Hero extends Person implements HeroConfig {
     const linkedLocation = location.linkedLocations.find(linked => linked.location.id === locationId)
     if (!linkedLocation) return
     if (enemiesCount > 0 && linkedLocation.direction !== this.currentLocationDirection) {
-      throw new Error('You cannot run away from the fight!')
+      console.warn('You cannot run away from the fight!')
+      return
     }
     this.currentLocation = linkedLocation.location
     this.currentLocationDirection = getOppositeDirection(linkedLocation.direction)

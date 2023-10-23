@@ -24,7 +24,7 @@ export default class GameItem implements AbstractGameItemConfig {
   }
 
   use(hero: PersonConfig) {
-    console.log(`You used the ${this.label} on ${hero.name}!`);
+    console.info(`You used the ${this.label} on ${hero.name}!`);
     return true
   }
 }
@@ -39,7 +39,7 @@ export class Bread extends GameItem implements GameItemConfig {
 
   use(hero: PersonConfig) {
     if (hero.getHealth() === hero.getMaxHealth()) {
-      console.log('You are already at full health!');
+      console.warn('You are already at full health!');
       return false;
     }
     super.use(hero);
