@@ -101,9 +101,9 @@ export default abstract class Person implements PersonConfig {
   damage(amount: number) {
     if (this.health <= amount) {
       this.health = 0;
-      return;
+    } else {
+      this.health -= amount;
     }
-    this.health -= amount;
     EventsManager.getInstance().emit(EVENTS.damage, this.id, this.type, this.health)
   }
 
