@@ -135,16 +135,25 @@ export class Enemy extends Person implements EnemyConfig {
 export class Hero extends Person implements HeroConfig {
   currentLocationDirection: Direction = 'l';
 
+  canMove (locationId: LocationID) {
+    const location = this.currentLocation
+    if (!location) return false
+    const enemiesCount = location?.personsOnLocation.size
+    const linkedLocation = location.linkedLocations.find(linked => linked.location.id === locationId)
+    if (!linkedLocation) return false
+    if (enemiesCount > 0 && linkedLocation.direction !== this.currentLocationDirection) {
+      console.warn('Enemy is blocking your way!')
+      return false
+    }
+    return true
+  }
+
   move (locationId: LocationID) {
     const location = this.currentLocation
     if (!location) return
-    const enemiesCount = location?.personsOnLocation.size
     const linkedLocation = location.linkedLocations.find(linked => linked.location.id === locationId)
     if (!linkedLocation) return
-    if (enemiesCount > 0 && linkedLocation.direction !== this.currentLocationDirection) {
-      console.warn('You cannot run away from the fight!')
-      return
-    }
+
     this.currentLocation = linkedLocation.location
     this.currentLocationDirection = getOppositeDirection(linkedLocation.direction)
     EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentLocationDirection)

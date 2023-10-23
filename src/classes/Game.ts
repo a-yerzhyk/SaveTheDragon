@@ -29,10 +29,13 @@ export class Game {
     this.setHeroLocation(config.hero.location.section, config.hero.location.locationId)
   }
 
-  moveEnemies() {
+  moveHero(locationId: LocationID) {
+    const canMove = this.hero.canMove(locationId)
+    if (!canMove) return
     this.enemies.forEach(enemy => {
       enemy.moveRandomly()
     })
+    this.hero.move(locationId)
   }
 
   getSection(section: SECTION) {
