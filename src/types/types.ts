@@ -1,6 +1,6 @@
-import { ITEMS, ENEMY, SECTION } from '../config/config.js';
+import { ITEM, ENEMY, SECTION } from '../config/config.js';
 
-export type InventoryArray = Array<{ id: ITEMS, quantity: number }>
+export type InventoryArray = Array<{ id: ITEM, quantity: number }>
 
 export type PersonID = number;
 export type LocationID = number;
@@ -11,9 +11,9 @@ export interface PersonConfig {
   getHealth: () => number;
   getStrength: () => number;
   getInventory: () => Inventory;
-  emptyInventory: () => { itemId: ITEMS; quantity: number; }[];
-  giveItem: (itemId: ITEMS, quantity?: number) => void;
-  useItem: (itemId: ITEMS) => void;
+  emptyInventory: () => { itemId: ITEM; quantity: number; }[];
+  giveItem: (itemId: ITEM, quantity?: number) => void;
+  useItem: (itemId: ITEM) => void;
   heal: (amount: number) => void;
   damage: (amount: number) => void;
   increaceStrength: (amount: number) => void;
@@ -33,7 +33,7 @@ export interface AbstractGameItemConfig {
   use: (hero: PersonConfig) => void;
 }
 export interface GameItemConfig extends AbstractGameItemConfig {
-  type: ITEMS;
+  type: ITEM;
 }
 export interface InventoryCell {
   item: GameItemConfig;

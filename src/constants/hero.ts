@@ -1,4 +1,4 @@
-import { ITEMS, SECTION } from '../config/config.js';
+import { ITEM, SECTION } from '../config/config.js';
 import { HeroC } from '../types/types.js';
 
 export const HERO: HeroC = {
@@ -7,7 +7,7 @@ export const HERO: HeroC = {
   health: 100,
   strength: 10,
   inventory: [{
-    id: ITEMS.BREAD,
+    id: ITEM.BREAD,
     quantity: 2
   }],
   location: {

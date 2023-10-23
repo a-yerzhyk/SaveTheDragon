@@ -4,7 +4,7 @@ export enum SECTION {
   CASTLE = 'CASTLE',
 }
 
-export enum ITEMS {
+export enum ITEM {
   BREAD = 'Bread',
   POTION_OF_POWER = 'Potion of Power',
 }

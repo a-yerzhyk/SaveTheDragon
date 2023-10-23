@@ -1,4 +1,4 @@
-import { ENEMY, SECTION, ITEMS } from '../config/config.js';
+import { ENEMY, SECTION, ITEM } from '../config/config.js';
 import { EnemyC } from '../types/types.js';
 
 export const ENEMIES: EnemyC[] = [
@@ -23,7 +23,7 @@ export const ENEMIES: EnemyC[] = [
   {
     id: 6,
     type: ENEMY.GNOME,
-    inventory: [{ id: ITEMS.BREAD, quantity: 1 }],
+    inventory: [{ id: ITEM.BREAD, quantity: 1 }],
     location: {
       section: SECTION.SUBURB,
       locationId: 5
@@ -32,7 +32,7 @@ export const ENEMIES: EnemyC[] = [
   {
     id: 6,
     type: ENEMY.GUARD,
-    inventory: [{ id: ITEMS.POTION_OF_POWER, quantity: 1 }],
+    inventory: [{ id: ITEM.POTION_OF_POWER, quantity: 1 }],
     location: {
       section: SECTION.TOWN,
       locationId: 9

@@ -1,5 +1,5 @@
 import { GameItemsFactory } from './GameItem.js'
-import { ITEMS, ENEMY, HERO, ENEMIES } from '../config/config.js';
+import { ITEM, ENEMY, HERO, ENEMIES } from '../config/config.js';
 import {
   PersonID,
   InventoryArray,
@@ -62,7 +62,7 @@ export default abstract class Person implements PersonConfig {
     return inventory;
   }
 
-  giveItem(itemId: ITEMS, quantity: number = 1) {
+  giveItem(itemId: ITEM, quantity: number = 1) {
     const InventoryCell = this.inventory.find(item => item.item.type === itemId)
     if (InventoryCell) {
       InventoryCell.quantity += quantity;
@@ -75,7 +75,7 @@ export default abstract class Person implements PersonConfig {
     EventsManager.getInstance().emit(EVENTS.giveItem, this.id, this.type, this.inventory)
   }
 
-  useItem(itemId: ITEMS) {
+  useItem(itemId: ITEM) {
     const InventoryCell = this.inventory.find(item => item.item.type === itemId);
     if (InventoryCell && InventoryCell.quantity) {
       InventoryCell.item.use(this);
