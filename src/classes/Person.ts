@@ -161,8 +161,9 @@ export class Hero extends Person implements HeroConfig {
     EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentDirection)
   }
 
-  teleport (location: GameLocationConfig) {
-    if (this.currentLocation?.teleport?.location.id === location.id) {
+  teleport (locationId: LocationID) {
+    if (this.currentLocation?.teleport?.location.id === locationId) {
+      const location = this.currentLocation.teleport.location
       this.currentLocation = location
       this.currentDirection = location.teleport?.direction || 'l'
       EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentDirection)

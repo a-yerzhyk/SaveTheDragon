@@ -23,6 +23,7 @@ export interface PersonConfig {
 export interface HeroConfig extends PersonConfig {
   canMove: (locationId: LocationID) => boolean;
   move: (locationId: LocationID) => void;
+  teleport: (locationId: LocationID) => void;
 }
 
 export interface EnemyConfig extends PersonConfig {
