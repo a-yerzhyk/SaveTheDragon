@@ -10,6 +10,7 @@ export interface PersonConfig {
   currentLocation: GameLocationConfig | undefined;
   getHealth: () => number;
   getStrength: () => number;
+  getMaxHealth: () => number;
   getInventory: () => Inventory;
   emptyInventory: () => { itemId: ITEM; quantity: number; }[];
   giveItem: (itemId: ITEM, quantity?: number) => void;
