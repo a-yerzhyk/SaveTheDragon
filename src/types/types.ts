@@ -31,7 +31,7 @@ export interface EnemyConfig extends PersonConfig {
 export interface AbstractGameItemConfig {
   label: string;
   description: string;
-  use: (hero: PersonConfig) => void;
+  use: (hero: PersonConfig) => boolean;
 }
 export interface GameItemConfig extends AbstractGameItemConfig {
   type: ITEM;

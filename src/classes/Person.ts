@@ -78,15 +78,16 @@ export default abstract class Person implements PersonConfig {
   useItem(itemId: ITEM) {
     const InventoryCell = this.inventory.find(item => item.item.type === itemId);
     if (InventoryCell && InventoryCell.quantity) {
-      InventoryCell.item.use(this);
+      const isUsed = InventoryCell.item.use(this);
+      if (!isUsed) return;
       InventoryCell.quantity--;
       if (InventoryCell.quantity <= 0) {
         this.inventory.splice(this.inventory.indexOf(InventoryCell), 1);
       }
+      EventsManager.getInstance().emit(EVENTS.useItem, this.id, this.type, this.inventory)
     } else {
       console.warn(`You do not have enought ${itemId}!`)
     }
-    EventsManager.getInstance().emit(EVENTS.useItem, this.id, this.type, this.inventory)
   }
 
   heal(amount: number) {
