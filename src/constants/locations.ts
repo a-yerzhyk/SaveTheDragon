@@ -1,4 +1,4 @@
-import { LocationConnectionConfig, LocationConfig } from '../types/types.js'
+import { LocationConnectionConfig, LocationConfig, LocationTeleportConfig } from '../types/types.js'
 import { SECTION } from '../config/config.js'
 
 export const LOCATIONS: Record<SECTION, Array<LocationConfig>> = {
@@ -468,3 +468,20 @@ export const CONNECTIONS: Record<SECTION, Array<LocationConnectionConfig>> = {
     },
   ],
 }
+
+export const TELEPORTS: Array<LocationTeleportConfig> = [
+  {
+    section1: SECTION.SUBURB,
+    section2: SECTION.TOWN,
+    locationId1: 13,
+    locationId2: 1,
+    direction: 'r',
+  },
+  {
+    section1: SECTION.TOWN,
+    section2: SECTION.CASTLE,
+    locationId1: 13,
+    locationId2: 1,
+    direction: 'r',
+  },
+]

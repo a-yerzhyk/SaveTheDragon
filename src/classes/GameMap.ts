@@ -7,6 +7,7 @@ import {
   GameLocationConfig,
   PersonConfig,
   GameMapGraphConfig,
+  LocationTeleportConfig,
   GameMapConfig
 } from '../types/types.js';
 import { SECTION } from '../config/config.js';
@@ -15,7 +16,11 @@ import { getOppositeDirection } from '../utils/direction.js';
 export class GameMapGenerator {
   private gameMaps: Map<SECTION, GameMapConfig>;
   
-  constructor(mapConfigs: Record<SECTION, Array<LocationConfig>>, connectionsConfigs: Record<SECTION, Array<LocationConnectionConfig>>) {
+  constructor(
+    mapConfigs: Record<SECTION, Array<LocationConfig>>,
+    connectionsConfigs: Record<SECTION, Array<LocationConnectionConfig>>,
+    teleportConfigs: Array<LocationTeleportConfig>
+  ) {
     this.gameMaps = new Map()
 
     for (let key in mapConfigs) {
@@ -32,9 +37,26 @@ export class GameMapGenerator {
       })
       this.gameMaps.set(sectionKey, gameMap)
     }
+
+    for (let teleportConfig of teleportConfigs) {
+      const { section1, section2, locationId1, locationId2, direction } = teleportConfig
+      const location1 = this.gameMaps.get(section1)?.getLocation(locationId1)
+      const location2 = this.gameMaps.get(section2)?.getLocation(locationId2)
+      if (location1 && location2) {
+        location1.linkTeleport(location2, direction)
+        location2.linkTeleport(location1, getOppositeDirection(direction))
+      }
+    }
   }
 
   private createLocations(config: Array<LocationConfig>, section: SECTION): GameLocationConfig[] {
+    return config.map(locationConfig => {
+      const location = new GameLocation(locationConfig, section);
+      return location
+    })
+  }
+
+  private createTeleports(config: Array<LocationConfig>, section: SECTION): GameLocationConfig[] {
     return config.map(locationConfig => {
       const location = new GameLocation(locationConfig, section);
       return location
@@ -78,6 +100,7 @@ export class GameLocation implements GameLocationConfig {
   readonly section: SECTION;
   readonly linkedLocations: Array<{location: GameLocationConfig, direction: Direction }> = [];
   readonly personsOnLocation: Map<PersonID, PersonConfig> = new Map<PersonID, PersonConfig>()
+  teleport: { location: GameLocationConfig, direction: Direction } | null = null
 
   constructor({ id, name, type }: LocationConfig, section: SECTION) {
     this.id = id;
@@ -98,6 +121,10 @@ export class GameLocation implements GameLocationConfig {
 
   link (location: GameLocationConfig, direction: Direction) {
     this.linkedLocations.push({ location, direction });
+  }
+
+  linkTeleport (location: GameLocationConfig, direction: Direction) {
+    this.teleport = { location, direction }
   }
 }
 

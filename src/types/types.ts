@@ -49,9 +49,11 @@ export interface GameLocationConfig {
   section: SECTION;
   linkedLocations: Array<{location: GameLocationConfig, direction: Direction }>;
   personsOnLocation: Map<PersonID, PersonConfig>;
+  teleport: { location: GameLocationConfig, direction: Direction } | null;
   addPerson: (person: PersonConfig) => void;
   removePerson: (personId: PersonID) => PersonConfig | undefined;
   link: (location: GameLocationConfig, direction: Direction) => void;
+  linkTeleport: (location: GameLocationConfig, direction: Direction) => void
 }
 
 interface GameMapBase {
@@ -87,10 +89,23 @@ export type LocationConnectionConfig = {
   direction: Direction;
 }
 
+export type LocationTeleportConfig = {
+  section1: SECTION;
+  section2: SECTION;
+  locationId1: LocationID;
+  locationId2: LocationID;
+  direction: Direction;
+}
+
 export type LocationConfig = {
   id: LocationID;
   type: string;
   name: string;
+  teleportToSection?: {
+    section: SECTION;
+    locationId: LocationID;
+    direction: Direction;
+  }
 }
 
 // GAME CONFIG TYPES
@@ -122,4 +137,5 @@ export type GameConfig = {
   enemies: EnemyC[],
   locations: Record<SECTION, Array<LocationConfig>>,
   locationConnections: Record<SECTION, Array<LocationConnectionConfig>>,
+  sectionTeleports: Array<LocationTeleportConfig>,
 }

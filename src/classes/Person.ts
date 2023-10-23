@@ -124,6 +124,8 @@ export class Enemy extends Person implements EnemyConfig {
     const location = this.currentLocation
     if (!location) return
     const linkedLocations = location.linkedLocations
+    const wantToMove = Math.random() > 0.7
+    if (!wantToMove) return
     const randomIndex = Math.floor(Math.random() * linkedLocations.length)
     const randomLocation = linkedLocations[randomIndex].location
     location.removePerson(this.id)
@@ -133,7 +135,7 @@ export class Enemy extends Person implements EnemyConfig {
 }
 
 export class Hero extends Person implements HeroConfig {
-  currentLocationDirection: Direction = 'l';
+  currentDirection: Direction = 'l';
 
   canMove (locationId: LocationID) {
     const location = this.currentLocation
@@ -141,7 +143,7 @@ export class Hero extends Person implements HeroConfig {
     const enemiesCount = location?.personsOnLocation.size
     const linkedLocation = location.linkedLocations.find(linked => linked.location.id === locationId)
     if (!linkedLocation) return false
-    if (enemiesCount > 0 && linkedLocation.direction !== this.currentLocationDirection) {
+    if (enemiesCount > 0 && linkedLocation.direction !== this.currentDirection) {
       console.warn('Enemy is blocking your way!')
       return false
     }
@@ -155,14 +157,16 @@ export class Hero extends Person implements HeroConfig {
     if (!linkedLocation) return
 
     this.currentLocation = linkedLocation.location
-    this.currentLocationDirection = getOppositeDirection(linkedLocation.direction)
-    EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentLocationDirection)
+    this.currentDirection = getOppositeDirection(linkedLocation.direction)
+    EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentDirection)
   }
 
   teleport (location: GameLocationConfig) {
-    this.currentLocation = location
-    this.currentLocationDirection = 'l'
-    EventsManager.getInstance().emit(EVENTS.move, this.id, this.type, this.currentLocation, this.currentLocationDirection)
+    if (this.currentLocation?.teleport?.location.id === location.id) {
+      this.currentLocation = location
+      this.currentDirection = location.teleport?.direction || 'l'
+      EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentDirection)
+    }
   }
 }
 

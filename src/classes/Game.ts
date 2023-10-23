@@ -4,6 +4,7 @@ import {
   GameMapConfig,
   LocationConfig,
   LocationConnectionConfig,
+  LocationTeleportConfig,
   GameConfig,
   HeroC,
   EnemyC,
@@ -13,7 +14,7 @@ import { HeroBuilder, Enemy } from "./Person.js";
 import { GameMapGenerator } from './GameMap.js'
 
 import { SECTION } from '../config/config.js';
-import { LOCATIONS, CONNECTIONS } from '../constants/locations.js';
+import { LOCATIONS, CONNECTIONS, TELEPORTS } from '../constants/locations.js';
 import { HERO } from '../constants/hero.js';
 import { ENEMIES } from '../constants/enemies.js';
 
@@ -23,7 +24,7 @@ export class Game {
   gameMaps: Map<SECTION, GameMapConfig>
 
   constructor(config: GameConfig) {
-    this.gameMaps = this.createGameMaps(config.locations, config.locationConnections)
+    this.gameMaps = this.createGameMaps(config.locations, config.locationConnections, config.sectionTeleports)
     this.hero = this.createHero(config.hero)
     this.enemies = this.createEnemies(config.enemies)
     this.setHeroLocation(config.hero.location.section, config.hero.location.locationId)
@@ -64,8 +65,12 @@ export class Game {
     })
   }
 
-  private createGameMaps(locationsConfig: Record<SECTION, Array<LocationConfig>>, connectionsConfig: Record<SECTION, Array<LocationConnectionConfig>>): Map<SECTION, GameMapConfig> {
-    const mapGenerator = new GameMapGenerator(locationsConfig, connectionsConfig)
+  private createGameMaps(
+    locationsConfig: Record<SECTION, Array<LocationConfig>>,
+    connectionsConfig: Record<SECTION, Array<LocationConnectionConfig>>,
+    teleportsConfig: Array<LocationTeleportConfig>
+  ): Map<SECTION, GameMapConfig> {
+    const mapGenerator = new GameMapGenerator(locationsConfig, connectionsConfig, teleportsConfig)
     return mapGenerator.getGameMaps()
   }
 
@@ -95,4 +100,5 @@ const defaultGameConfig = {
   enemies: ENEMIES,
   locations: LOCATIONS,
   locationConnections: CONNECTIONS,
+  sectionTeleports: TELEPORTS,
 }
