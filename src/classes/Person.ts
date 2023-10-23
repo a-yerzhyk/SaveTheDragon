@@ -3,7 +3,7 @@ import { ITEMS, ENEMY, HERO, ENEMIES } from '../config/config.js';
 import {
   PersonID,
   InventoryArray,
-  InventoryItem,
+  InventoryCell,
   Inventory,
   PersonConfig,
   HeroConfig,
@@ -18,6 +18,7 @@ import { EventsManager, EVENTS } from './EventsManager.js';
 export default abstract class Person implements PersonConfig {
   readonly id: PersonID;
   readonly name: string;
+  private maxHealth: number;
   private health: number;
   private strength: number;
   private readonly inventory: Inventory;
@@ -27,6 +28,7 @@ export default abstract class Person implements PersonConfig {
   constructor (id: PersonID, name: string, health: number, strength: number, items: Inventory, type: ENEMY | 'hero' = 'hero') {
     this.id = id;
     this.name = name;
+    this.maxHealth = health;
     this.health = health;
     this.strength = strength;
     this.inventory = items;
@@ -35,6 +37,10 @@ export default abstract class Person implements PersonConfig {
 
   getHealth() {
     return this.health;
+  }
+
+  getMaxHealth() {
+    return this.maxHealth;
   }
 
   getStrength() {
@@ -57,9 +63,9 @@ export default abstract class Person implements PersonConfig {
   }
 
   giveItem(itemId: ITEMS, quantity: number = 1) {
-    const inventoryItem = this.inventory.find(item => item.item.type === itemId)
-    if (inventoryItem) {
-      inventoryItem.quantity += quantity;
+    const InventoryCell = this.inventory.find(item => item.item.type === itemId)
+    if (InventoryCell) {
+      InventoryCell.quantity += quantity;
     } else {
       this.inventory.push({
         item: GameItemsFactory.createItem(itemId),
@@ -70,12 +76,12 @@ export default abstract class Person implements PersonConfig {
   }
 
   useItem(itemId: ITEMS) {
-    const inventoryItem = this.inventory.find(item => item.item.type === itemId);
-    if (inventoryItem && inventoryItem.quantity) {
-      inventoryItem.item.use(this);
-      inventoryItem.quantity--;
-      if (inventoryItem.quantity <= 0) {
-        this.inventory.splice(this.inventory.indexOf(inventoryItem), 1);
+    const InventoryCell = this.inventory.find(item => item.item.type === itemId);
+    if (InventoryCell && InventoryCell.quantity) {
+      InventoryCell.item.use(this);
+      InventoryCell.quantity--;
+      if (InventoryCell.quantity <= 0) {
+        this.inventory.splice(this.inventory.indexOf(InventoryCell), 1);
       }
     } else {
       console.warn(`You do not have enought ${itemId}!`)
@@ -85,6 +91,9 @@ export default abstract class Person implements PersonConfig {
 
   heal(amount: number) {
     this.health += amount;
+    if (this.health > this.maxHealth) {
+      this.health = this.maxHealth;
+    }
     EventsManager.getInstance().emit(EVENTS.heal, this.id, this.type, this.health)
   }
 
@@ -185,6 +194,6 @@ export class HeroBuilder {
 
 function createInventory (inventory: InventoryArray) {
   return inventory.map(item => {
-    return { item: GameItemsFactory.createItem(item.id), quantity: item.quantity } as InventoryItem
+    return { item: GameItemsFactory.createItem(item.id), quantity: item.quantity } as InventoryCell
   })
 }
