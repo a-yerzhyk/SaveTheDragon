@@ -36,16 +36,7 @@ export class GameMapGenerator {
         gameMap.addPath(connection.locationID1, connection.locationID2, connection.direction)
       })
       this.gameMaps.set(sectionKey, gameMap)
-    }
-
-    for (let teleportConfig of teleportConfigs) {
-      const { section1, section2, locationId1, locationId2, direction } = teleportConfig
-      const location1 = this.gameMaps.get(section1)?.getLocation(locationId1)
-      const location2 = this.gameMaps.get(section2)?.getLocation(locationId2)
-      if (location1 && location2) {
-        location1.linkTeleport(location2, direction)
-        location2.linkTeleport(location1, getOppositeDirection(direction))
-      }
+      this.createTeleports(teleportConfigs)
     }
   }
 
@@ -56,11 +47,16 @@ export class GameMapGenerator {
     })
   }
 
-  private createTeleports(config: Array<LocationConfig>, section: SECTION): GameLocationConfig[] {
-    return config.map(locationConfig => {
-      const location = new GameLocation(locationConfig, section);
-      return location
-    })
+  private createTeleports(config: Array<LocationTeleportConfig>) {
+    for (let teleportConfig of config) {
+      const { section1, section2, locationId1, locationId2, direction } = teleportConfig
+      const location1 = this.gameMaps.get(section1)?.getLocation(locationId1)
+      const location2 = this.gameMaps.get(section2)?.getLocation(locationId2)
+      if (location1 && location2) {
+        location1.linkTeleport(location2, direction)
+        location2.linkTeleport(location1, getOppositeDirection(direction))
+      }
+    }
   }
 
   getGameMaps() {
