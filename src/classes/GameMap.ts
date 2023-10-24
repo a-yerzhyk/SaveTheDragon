@@ -28,7 +28,7 @@ export class GameMapGenerator {
       const mapConfig = mapConfigs[sectionKey]
       const connectionsConfig = connectionsConfigs[sectionKey]
       const locations = this.createLocations(mapConfig, sectionKey)
-      const gameMap = new GameMap()
+      const gameMap = new GameMap(sectionKey)
       locations.forEach(location => {
         gameMap.addLocation(location)
       })
@@ -66,9 +66,11 @@ export class GameMapGenerator {
 
 export class GameMap implements GameMapConfig, GameMapGraphConfig {
   locations: Map<LocationID, GameLocationConfig>;
+  section: SECTION;
 
-  constructor () {
+  constructor (section: SECTION) {
     this.locations = new Map();
+    this.section = section;
   }
 
   addLocation(location: GameLocationConfig) {

@@ -59,6 +59,7 @@ export interface GameLocationConfig {
 
 interface GameMapBase {
   locations: Map<LocationID, GameLocationConfig>;
+  section: SECTION;
 }
 
 export interface GameMapGraphConfig extends GameMapBase {
