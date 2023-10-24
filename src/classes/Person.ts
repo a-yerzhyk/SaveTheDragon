@@ -137,35 +137,39 @@ export class Enemy extends Person implements EnemyConfig {
 export class Hero extends Person implements HeroConfig {
   currentDirection: Direction = 'l';
 
-  canMove (locationId: LocationID) {
-    const location = this.currentLocation
-    if (!location) return false
-    const enemiesCount = location?.personsOnLocation.size
-    const linkedLocation = location.linkedLocations.find(linked => linked.location.id === locationId)
-    if (!linkedLocation) return false
-    if (enemiesCount > 0 && linkedLocation.direction !== this.currentDirection) {
+  canMove (direction: Direction) {
+    if (!this.currentLocation) return false
+    const hasDirection = this.currentLocation.linkedLocations.some(linked => linked.direction === direction)
+    if (!hasDirection) return false
+    const enemiesCount = this.currentLocation.personsOnLocation.size
+    if (enemiesCount > 0 && direction !== this.currentDirection) {
       console.warn('Enemy is blocking your way!')
       return false
     }
     return true
   }
 
-  move (locationId: LocationID) {
-    const location = this.currentLocation
-    if (!location) return
-    const linkedLocation = location.linkedLocations.find(linked => linked.location.id === locationId)
-    if (!linkedLocation) return
+  move (direction: Direction) {
+    if (!this.currentLocation) return
+    const target = this.currentLocation.linkedLocations.find(linked => linked.direction === direction)
+    if (!target) return
 
-    this.currentLocation = linkedLocation.location
-    this.currentDirection = getOppositeDirection(linkedLocation.direction)
+    this.currentLocation = target.location
+    this.currentDirection = getOppositeDirection(target.direction)
     EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentDirection)
   }
 
   teleport (locationId: LocationID) {
+    // Check for enemies
     if (this.currentLocation?.teleport?.location.id === locationId) {
-      const location = this.currentLocation.teleport.location
-      this.currentLocation = location
-      this.currentDirection = location.teleport?.direction || 'l'
+      const enemiesCount = this.currentLocation.personsOnLocation.size
+      if (enemiesCount > 0 && this.currentLocation.teleport.direction !== this.currentDirection) {
+        console.warn('Enemy is blocking your way!')
+        return
+      }
+      const targetLocation = this.currentLocation.teleport.location
+      this.currentLocation = targetLocation
+      this.currentDirection = targetLocation.teleport?.direction || 'l'
       EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentDirection)
     }
   }

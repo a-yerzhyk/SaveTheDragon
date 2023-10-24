@@ -8,6 +8,7 @@ import {
   GameConfig,
   HeroC,
   EnemyC,
+  Direction,
   LocationID,
 } from "../types/types.js";
 import { HeroBuilder, Enemy } from "./Person.js";
@@ -30,13 +31,13 @@ export class Game {
     this.setHeroLocation(config.hero.location.section, config.hero.location.locationId)
   }
 
-  moveHero(locationId: LocationID) {
-    const canMove = this.hero.canMove(locationId)
+  moveHero(direction: Direction) {
+    const canMove = this.hero.canMove(direction)
     if (!canMove) return
     this.enemies.forEach(enemy => {
       enemy.moveRandomly()
     })
-    this.hero.move(locationId)
+    this.hero.move(direction)
   }
 
   getSection(section: SECTION) {

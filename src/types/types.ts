@@ -21,8 +21,8 @@ export interface PersonConfig {
 }
 
 export interface HeroConfig extends PersonConfig {
-  canMove: (locationId: LocationID) => boolean;
-  move: (locationId: LocationID) => void;
+  canMove: (direction: Direction) => boolean;
+  move: (direction: Direction) => void;
   teleport: (locationId: LocationID) => void;
 }
 
