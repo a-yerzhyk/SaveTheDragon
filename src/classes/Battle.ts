@@ -54,7 +54,6 @@ class Battle {
   }
 }
 
-
 export class HitTheNumberBattle extends Battle {
   private readonly NEW_NUMBER_INTERVAL = 800;
   private previous: number = 0;
