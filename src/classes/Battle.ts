@@ -80,6 +80,10 @@ export class HitTheNumberBattle extends Battle {
     this.updateSuccessArray(success)
   }
 
+  getCurrent () {
+    return this.current;
+  }
+
   protected wonBattle() {
     this.stopBattle();
     super.wonBattle();
@@ -107,6 +111,7 @@ export class HitTheNumberBattle extends Battle {
     this.hitHero(damageToHero);
     this.hitEnemy(damageToEnemy);
     this.successArray = [];
+    EventsManager.getInstance().emit(EVENTS.battleRoundEnd)
   }
 
   private calcDamage(count: number, damage: number) {
