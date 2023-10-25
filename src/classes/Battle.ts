@@ -14,6 +14,7 @@ class Battle {
   }
 
   protected hitEnemy(damageToEnemy: number) {
+    if (!damageToEnemy) return
     const damage = this.randomizeDamage(damageToEnemy);
     this.enemy.damage(damage);
     if (!this.isEnemyAlive()) {
@@ -22,6 +23,7 @@ class Battle {
   }
 
   protected hitHero(damageToHero: number) {
+    if (!damageToHero) return
     const damage = this.randomizeDamage(damageToHero);
     this.hero.damage(damage);
     if (!this.isHeroAlive()) {

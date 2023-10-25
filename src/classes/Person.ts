@@ -91,6 +91,7 @@ export default abstract class Person implements PersonConfig {
   }
 
   heal(amount: number) {
+    if (amount < 0) return
     this.health += amount;
     if (this.health > this.maxHealth) {
       this.health = this.maxHealth;
@@ -99,6 +100,7 @@ export default abstract class Person implements PersonConfig {
   }
 
   damage(amount: number) {
+    if (amount < 0) return
     if (this.health <= amount) {
       this.health = 0;
     } else {
