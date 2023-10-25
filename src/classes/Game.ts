@@ -18,6 +18,7 @@ import { SECTION } from '../config/config.js';
 import { LOCATIONS, CONNECTIONS, TELEPORTS } from '../constants/locations.js';
 import { HERO } from '../constants/hero.js';
 import { ENEMIES } from '../constants/enemies.js';
+import { EVENTS, EventsManager } from "./EventsManager.js";
 
 export class Game {
   hero: HeroConfig
@@ -46,6 +47,10 @@ export class Game {
 
   getLocation(section: SECTION, locationId: LocationID) {
     return this.gameMaps.get(section)?.getLocation(locationId)
+  }
+
+  gameOver() {
+    EventsManager.getInstance().emit(EVENTS.gameOver)
   }
 
   private createHero(heroConfig: HeroC): HeroConfig {

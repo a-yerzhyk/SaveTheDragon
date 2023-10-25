@@ -1,4 +1,13 @@
-export type Event = 'move' | 'giveItem' | 'useItem' | 'heal' | 'damage' | 'increaceStrength'
+export type Event = 'move'
+  | 'giveItem'
+  | 'useItem'
+  | 'heal'
+  | 'damage'
+  | 'increaceStrength'
+  | 'battleNumber'
+  | 'battleSuccess'
+  | 'battleWon'
+  | 'gameOver'
 
 export const EVENTS: Record<Event, Event> = {
   move: 'move',
@@ -7,6 +16,10 @@ export const EVENTS: Record<Event, Event> = {
   heal: 'heal',
   damage: 'damage',
   increaceStrength: 'increaceStrength',
+  battleNumber: 'battleNumber',
+  battleSuccess: 'battleSuccess',
+  battleWon: 'battleWon',
+  gameOver: 'gameOver'
 }
 
 export class EventsManager {
