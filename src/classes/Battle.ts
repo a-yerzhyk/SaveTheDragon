@@ -85,6 +85,12 @@ export class HitTheNumberBattle extends Battle {
     return this.current;
   }
 
+  stopBattle() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
   protected wonBattle() {
     this.stopBattle();
     super.wonBattle();
@@ -122,12 +128,6 @@ export class HitTheNumberBattle extends Battle {
   private updateCurrent (newCurrent: number) {
     this.current = newCurrent;
     EventsManager.getInstance().emit(EVENTS.battleNumber, newCurrent)
-  }
-
-  private stopBattle() {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
   }
 
   private getNumber() {
