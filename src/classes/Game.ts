@@ -25,11 +25,10 @@ export class Game {
   enemies: EnemyConfig[]
   gameMaps: Map<SECTION, GameMapConfig>
 
-  constructor(config: GameConfig) {
-    this.gameMaps = this.createGameMaps(config.locations, config.locationConnections, config.sectionTeleports)
-    this.hero = this.createHero(config.hero)
-    this.enemies = this.createEnemies(config.enemies)
-    this.setHeroLocation(config.hero.location.section, config.hero.location.locationId)
+  constructor(hero: HeroConfig, enemies: EnemyConfig[], gameMaps: Map<SECTION, GameMapConfig>) {
+    this.hero = hero
+    this.enemies = enemies
+    this.gameMaps = gameMaps
   }
 
   moveHero(direction: Direction) {
@@ -51,6 +50,27 @@ export class Game {
 
   gameOver() {
     EventsManager.getInstance().emit(EVENTS.gameOver)
+  }
+}
+
+export class GameCreator {
+  hero: HeroConfig
+  enemies: EnemyConfig[]
+  gameMaps: Map<SECTION, GameMapConfig>
+
+  constructor(config?: GameConfig) {
+    const gameConfig: GameConfig = {
+      ...defaultGameConfig,
+      ...config,
+    }
+    this.gameMaps = this.createGameMaps(gameConfig.locations, gameConfig.locationConnections, gameConfig.sectionTeleports)
+    this.hero = this.createHero(gameConfig.hero)
+    this.enemies = this.createEnemies(gameConfig.enemies)
+    this.setHeroLocation(gameConfig.hero.location.section, gameConfig.hero.location.locationId)
+  }
+
+  createGame() {
+    return new Game(this.hero, this.enemies, this.gameMaps)
   }
 
   private createHero(heroConfig: HeroC): HeroConfig {
@@ -91,13 +111,6 @@ export class Game {
     }
     location.addPerson(enemy)
     enemy.currentLocation = location
-  }
-}
-
-export class GameCreator {
-  createGame(config?: GameConfig) {
-    const gameConfig = config || defaultGameConfig
-    return new Game(gameConfig)
   }
 }
 
