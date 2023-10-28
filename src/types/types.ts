@@ -1,4 +1,4 @@
-import { ITEM, ENEMY, SECTION } from '../config/config.js';
+import { ITEM, ENEMY, SECTION, HERO } from '../config/config.js';
 
 export type InventoryArray = Array<{ id: ITEM, quantity: number }>
 
@@ -8,6 +8,7 @@ export interface PersonConfig {
   readonly id: PersonID;
   readonly name: string;
   currentLocation: GameLocationConfig | undefined;
+  type: ENEMY | HERO,
   getHealth: () => number;
   getStrength: () => number;
   getMaxHealth: () => number;
