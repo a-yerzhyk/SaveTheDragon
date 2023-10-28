@@ -61,6 +61,7 @@ export class HitTheNumberBattle extends Battle {
   private interval: NodeJS.Timeout | null = null;
   private successArray: Array<boolean> = [];
   private maxSuccess: number;
+  private battleInProgress = false;
 
   constructor(game: Game, hero: HeroConfig, enemy: EnemyConfig) {
     super(game, hero, enemy);
@@ -70,6 +71,7 @@ export class HitTheNumberBattle extends Battle {
   }
 
   startBattle() {
+    this.battleInProgress = true;
     this.interval = setInterval(() => {
       const newCurrent = this.getNumber()
       this.updateCurrent(newCurrent)
@@ -77,6 +79,7 @@ export class HitTheNumberBattle extends Battle {
   }
 
   tryNumber(number: number) {
+    if (!this.battleInProgress) return
     const success = number === this.current;
     this.updateSuccessArray(success)
   }
@@ -86,6 +89,7 @@ export class HitTheNumberBattle extends Battle {
   }
 
   stopBattle() {
+    this.battleInProgress = false;
     if (this.interval) {
       clearInterval(this.interval);
     }
