@@ -5,6 +5,7 @@ export const HERO: HeroC = {
   id: 1,
   name: 'Hero',
   health: 100,
+  maxHealth: 100,
   strength: 10,
   inventory: [{
     id: ITEM.BREAD,

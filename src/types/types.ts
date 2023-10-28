@@ -116,6 +116,7 @@ export type HeroC = {
   id: PersonID,
   name: string,
   health: number,
+  maxHealth: number,
   strength: number,
   inventory: InventoryArray,
   location: {

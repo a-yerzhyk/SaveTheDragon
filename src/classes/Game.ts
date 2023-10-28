@@ -77,6 +77,7 @@ export class GameCreator {
     const hero = new HeroBuilder(heroConfig.id)
       .setName(heroConfig.name)
       .setHealth(heroConfig.health)
+      .setMaxHealth(heroConfig.maxHealth)
       .setStrength(heroConfig.strength)
       .setItems(heroConfig.inventory)
       .build()

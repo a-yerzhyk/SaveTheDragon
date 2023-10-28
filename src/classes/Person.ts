@@ -25,10 +25,10 @@ export default abstract class Person implements PersonConfig {
   currentLocation: GameLocationConfig | undefined;
   type: ENEMY | HERO;
 
-  constructor (id: PersonID, name: string, health: number, strength: number, items: Inventory, type: ENEMY | 'hero' = 'hero') {
+  constructor (id: PersonID, name: string, health: number, maxHealth: number, strength: number, items: Inventory, type: ENEMY | 'hero' = 'hero') {
     this.id = id;
     this.name = name;
-    this.maxHealth = health;
+    this.maxHealth = maxHealth;
     this.health = health;
     this.strength = strength;
     this.inventory = items;
@@ -119,7 +119,7 @@ export class Enemy extends Person implements EnemyConfig {
   constructor(id: PersonID, inventory: InventoryArray, type: ENEMY) {
     const enemyConfig = ENEMIES[type]
     const enemyInventory = createInventory(inventory)
-    super(id, enemyConfig.name, enemyConfig.health, enemyConfig.strength, enemyInventory, type);
+    super(id, enemyConfig.name, enemyConfig.health, enemyConfig.health, enemyConfig.strength, enemyInventory, type);
   }
 
   moveRandomly() {
@@ -181,6 +181,7 @@ export class HeroBuilder {
   private id: PersonID;
   private name: string = '';
   private health: number = 0;
+  private maxHealth: number = 0;
   private strength: number = 0;
   private inventory: Inventory = [];
 
@@ -198,6 +199,11 @@ export class HeroBuilder {
     return this;
   }
 
+  setMaxHealth(health: number) {
+    this.maxHealth = health;
+    return this;
+  }
+
   setStrength(strength: number) {
     this.strength = strength;
     return this;
@@ -210,7 +216,7 @@ export class HeroBuilder {
 
 
   build() {
-    return new Hero(this.id, this.name, this.health, this.strength, this.inventory);
+    return new Hero(this.id, this.name, this.health, this.maxHealth, this.strength, this.inventory);
   }
 }
 
