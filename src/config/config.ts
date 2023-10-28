@@ -21,16 +21,16 @@ export const ENEMIES = {
   [ENEMY.SKELETON]: {
     name: ENEMY.SKELETON,
     health: 50,
-    strength: 4,
+    strength: 6,
   },
   [ENEMY.GNOME]: {
     name: ENEMY.GNOME,
-    health: 120,
-    strength: 6,
+    health: 100,
+    strength: 7,
   },
   [ENEMY.GUARD]: {
     name: ENEMY.GUARD,
-    health: 90,
-    strength: 8,
+    health: 70,
+    strength: 14,
   },
 } 
