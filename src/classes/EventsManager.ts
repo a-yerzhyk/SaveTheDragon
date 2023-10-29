@@ -4,8 +4,9 @@ export type Event = 'move'
   | 'heal'
   | 'damage'
   | 'increaceStrength'
-  | 'battleNumber'
-  | 'battleSuccess'
+  | 'battleCurrentNumber'
+  | 'battleStep'
+  | 'battleStepTimer'
   | 'battleRoundEnd'
   | 'battleWon'
   | 'gameOver'
@@ -17,8 +18,9 @@ export const EVENTS: Record<Event, Event> = {
   heal: 'heal',
   damage: 'damage',
   increaceStrength: 'increaceStrength',
-  battleNumber: 'battleNumber',
-  battleSuccess: 'battleSuccess',
+  battleCurrentNumber: 'battleCurrentNumber',
+  battleStep: 'battleStep',
+  battleStepTimer: 'battleStepTimer',
   battleRoundEnd: 'battleRoundEnd',
   battleWon: 'battleWon',
   gameOver: 'gameOver'

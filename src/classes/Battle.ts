@@ -58,74 +58,90 @@ export class HitTheNumberBattle extends Battle {
   private readonly NEW_NUMBER_INTERVAL = 800;
   private previous: number = 0;
   private current: number = 0;
-  private interval: NodeJS.Timeout | null = null;
-  private successArray: Array<boolean> = [];
-  private maxSuccess: number;
-  private battleInProgress = false;
+  private battleInterval: NodeJS.Timeout | null = null;
+  private stepsArray: Array<boolean> = [];
+  private maxSteps: number;
+  private stepLimitTimer = 0;
+  readonly STEP_LIMIT = 5;
 
   constructor(game: Game, hero: HeroConfig, enemy: EnemyConfig) {
     super(game, hero, enemy);
     const heroStrength = hero.getStrength();
     const enemyStrength = enemy.getStrength();
-    this.maxSuccess = heroStrength > enemyStrength ? 2 : heroStrength === enemyStrength ? 3 : 4;
+    this.maxSteps = heroStrength > enemyStrength ? 2 : heroStrength === enemyStrength ? 3 : 4;
   }
 
-  startBattle() {
-    this.battleInProgress = true;
-    this.interval = setInterval(() => {
-      const newCurrent = this.getNumber()
-      this.updateCurrent(newCurrent)
+  startRound() {
+    this.resetStepLimitTimer()
+    this.battleInterval = setInterval(() => {
+      this.updateStepLimitTimer()
+      if (this.stepLimitTimer >= this.STEP_LIMIT) {
+        this.updateStepsArray(false)
+      } else {
+        const newCurrent = this.getNumber()
+        this.updateCurrent(newCurrent)
+      }
     }, this.NEW_NUMBER_INTERVAL)
   }
 
   tryNumber(number: number) {
-    if (!this.battleInProgress) return
+    if (!this.battleInterval) return
     const success = number === this.current;
-    this.updateSuccessArray(success)
+    this.updateStepsArray(success)
   }
 
   getCurrent () {
     return this.current;
   }
 
-  stopBattle() {
-    this.battleInProgress = false;
-    if (this.interval) {
-      clearInterval(this.interval);
+  stopRound() {
+    if (this.battleInterval) {
+      clearInterval(this.battleInterval);
+      this.battleInterval = null;
     }
   }
 
-  maxSuccessCount() {
-    return this.maxSuccess;
+  maxStepsCount() {
+    return this.maxSteps;
   }
 
   protected wonBattle() {
-    this.stopBattle();
+    this.stopRound();
     super.wonBattle();
   }
 
   protected lostBattle() {
-    this.stopBattle();
+    this.stopRound();
     super.lostBattle();
   }
 
-  private updateSuccessArray(success: boolean) {
-    this.successArray.push(success)
-    EventsManager.getInstance().emit(EVENTS.battleSuccess, success)
-    if (this.successArray.length === this.maxSuccess) {
-      this.stopBattle()
+  private updateStepsArray(step: boolean) {
+    this.stepsArray.push(step)
+    EventsManager.getInstance().emit(EVENTS.battleStep, step, this.stepLimitTimer)
+    if (this.stepsArray.length === this.maxSteps) {
+      this.stopRound()
       this.calculateResult()
     }
   }
 
+  private updateStepLimitTimer() {
+    this.stepLimitTimer--
+    EventsManager.getInstance().emit(EVENTS.battleStepTimer, this.stepLimitTimer)
+  }
+  
+  private resetStepLimitTimer() {
+    this.stepLimitTimer = this.STEP_LIMIT
+    EventsManager.getInstance().emit(EVENTS.battleStepTimer, this.stepLimitTimer)
+  }
+
   private calculateResult() {
-    const successCount = this.successArray.filter(success => success).length;
-    const failCount = this.successArray.filter(success => !success).length;
-    const damageToEnemy = this.calcDamage(successCount, this.hero.getStrength());
+    const stepsCount = this.stepsArray.filter(step => step).length;
+    const failCount = this.stepsArray.filter(step => !step).length;
+    const damageToEnemy = this.calcDamage(stepsCount, this.hero.getStrength());
     const damageToHero = this.calcDamage(failCount, this.enemy.getStrength());
     this.hitHero(damageToHero);
     this.hitEnemy(damageToEnemy);
-    this.successArray = [];
+    this.stepsArray = [];
     EventsManager.getInstance().emit(EVENTS.battleRoundEnd)
   }
 
@@ -135,7 +151,7 @@ export class HitTheNumberBattle extends Battle {
 
   private updateCurrent (newCurrent: number) {
     this.current = newCurrent;
-    EventsManager.getInstance().emit(EVENTS.battleNumber, newCurrent)
+    EventsManager.getInstance().emit(EVENTS.battleCurrentNumber, newCurrent)
   }
 
   private getNumber() {
