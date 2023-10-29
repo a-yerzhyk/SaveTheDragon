@@ -75,7 +75,7 @@ export class HitTheNumberBattle extends Battle {
     this.resetStepLimitTimer()
     this.battleInterval = setInterval(() => {
       this.updateStepLimitTimer()
-      if (this.stepLimitTimer >= this.STEP_LIMIT) {
+      if (this.stepLimitTimer <= this.STEP_LIMIT) {
         this.updateStepsArray(false)
       } else {
         const newCurrent = this.getNumber()
