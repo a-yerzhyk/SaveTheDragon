@@ -55,14 +55,14 @@ class Battle {
 }
 
 export class HitTheNumberBattle extends Battle {
+  readonly STEP_LIMIT = 6;
   private readonly NEW_NUMBER_INTERVAL = 800;
   private previous: number = 0;
   private current: number = 0;
   private battleInterval: NodeJS.Timeout | null = null;
   private stepsArray: Array<boolean> = [];
   private maxSteps: number;
-  private stepLimitTimer = 0;
-  readonly STEP_LIMIT = 6;
+  private stepLimitTimer = this.STEP_LIMIT;
 
   constructor(game: Game, hero: HeroConfig, enemy: EnemyConfig) {
     super(game, hero, enemy);
