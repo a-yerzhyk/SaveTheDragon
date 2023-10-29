@@ -95,6 +95,10 @@ export class HitTheNumberBattle extends Battle {
     }
   }
 
+  maxSuccessCount() {
+    return this.maxSuccess;
+  }
+
   protected wonBattle() {
     this.stopBattle();
     super.wonBattle();
