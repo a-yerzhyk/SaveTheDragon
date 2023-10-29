@@ -62,7 +62,7 @@ export class HitTheNumberBattle extends Battle {
   private stepsArray: Array<boolean> = [];
   private maxSteps: number;
   private stepLimitTimer = 0;
-  readonly STEP_LIMIT = 5;
+  readonly STEP_LIMIT = 6;
 
   constructor(game: Game, hero: HeroConfig, enemy: EnemyConfig) {
     super(game, hero, enemy);
@@ -75,7 +75,7 @@ export class HitTheNumberBattle extends Battle {
     this.resetStepLimitTimer()
     this.battleInterval = setInterval(() => {
       this.updateStepLimitTimer()
-      if (this.stepLimitTimer <= this.STEP_LIMIT) {
+      if (this.stepLimitTimer <= 0) {
         this.updateStepsArray(false)
       } else {
         const newCurrent = this.getNumber()
