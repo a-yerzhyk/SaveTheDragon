@@ -134,8 +134,8 @@ export class HitTheNumberBattle extends Battle {
     this.hitHero(damageToHero);
     this.hitEnemy(damageToEnemy);
     this.stepsArray = [];
-    const hasHeroWon = this.isEnemyAlive();
-    EventsManager.getInstance().emit(EVENTS.battleRoundEnd, hasHeroWon)
+    const isBattleEnd = !this.isEnemyAlive() || !this.isHeroAlive();
+    EventsManager.getInstance().emit(EVENTS.battleRoundEnd, isBattleEnd)
   }
 
   private calcDamage(count: number, damage: number) {
