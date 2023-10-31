@@ -134,6 +134,17 @@ export class Enemy extends Person implements EnemyConfig {
     randomLocation.addPerson(this)
     this.currentLocation = randomLocation
   }
+
+  damage(amount: number) {
+    super.damage(amount)
+    if (this.getHealth() <= 0) {
+      this.kill()
+    }
+  }
+
+  kill() {
+    this.currentLocation?.removePerson(this.id)
+  }
 }
 
 export class Hero extends Person implements HeroConfig {
