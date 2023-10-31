@@ -26,7 +26,7 @@ export const ENEMIES = {
   [ENEMY.GNOME]: {
     name: ENEMY.GNOME,
     health: 100,
-    strength: 7,
+    strength: 10,
   },
   [ENEMY.GUARD]: {
     name: ENEMY.GUARD,
