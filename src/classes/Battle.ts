@@ -107,7 +107,7 @@ export class HitTheNumberBattle extends Battle {
   private startStep() {
     this.generateNewCurrentNumber()
     this.battleInterval = setInterval(() => {
-      if (this.battleTimer.timer <= 0) {
+      if (this.battleTimer.timer <= -1) {
         this.onRoundEnd()
       } else {
         this.generateNewCurrentNumber()
@@ -122,12 +122,17 @@ export class HitTheNumberBattle extends Battle {
     }
   }
 
+  private restartStep() {
+    this.stopStep()
+    this.startStep()
+  }
+
   private onStepEnd(step: boolean) {
     this.addStep(step)
     if (this.stepsArray.length === this.maxSteps) {
       this.onRoundEnd()
     } else {
-      this.restartRound()
+      this.restartStep()
     }
   }
 
@@ -182,7 +187,7 @@ class BattleTimer {
       this.stopTimer()
     }
     this.timerInterval = setInterval(() => {
-      if (this.timer <= 0) {
+      if (this.timer <= -1) {
         this.stopTimer()
       } else {
         this.updateStepLimitTimer()
