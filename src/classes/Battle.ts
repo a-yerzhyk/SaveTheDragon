@@ -55,7 +55,7 @@ export class HitTheNumberBattle extends Battle {
   private battleInterval: NodeJS.Timeout | null = null;
   private stepsArray: Array<boolean> = [];
   private maxSteps: number;
-  private stepLimitTimer = this.STEP_LIMIT;
+  private battleTimer = new BattleTimer();
 
   constructor(game: Game, hero: HeroConfig, enemy: EnemyConfig) {
     super(game, hero, enemy);
@@ -65,15 +65,13 @@ export class HitTheNumberBattle extends Battle {
   }
 
   startRound() {
-    this.generateNewCurrentNumber()
-    this.battleInterval = setInterval(() => {
-      if (this.stepLimitTimer <= 0) {
-        this.onRoundEnd()
-      } else {
-        this.generateNewCurrentNumber()
-        this.updateStepLimitTimer()
-      }
-    }, this.NEW_NUMBER_INTERVAL)
+    this.battleTimer.startTimer(this.NEW_NUMBER_INTERVAL)
+    this.startStep()
+  }
+
+  stopRound() {
+    this.battleTimer.stopTimer()
+    this.stopStep()
   }
 
   tryNumber(number: number) {
@@ -86,49 +84,51 @@ export class HitTheNumberBattle extends Battle {
     return this.current;
   }
 
-  stopRound() {
+  maxStepsCount() {
+    return this.maxSteps;
+  }
+
+  protected wonBattle() {
+    this.battleTimer.stopTimer()
+    this.stopRound();
+  }
+
+  protected lostBattle() {
+    this.battleTimer.stopTimer()
+    this.stopRound();
+    super.lostBattle();
+  }
+
+  private restartRound() {
+    this.stopRound()
+    this.startRound()
+  }
+
+  private startStep() {
+    this.generateNewCurrentNumber()
+    this.battleInterval = setInterval(() => {
+      if (this.battleTimer.timer <= 0) {
+        this.onRoundEnd()
+      } else {
+        this.generateNewCurrentNumber()
+      }
+    }, this.NEW_NUMBER_INTERVAL)
+  }
+
+  private stopStep() {
     if (this.battleInterval) {
       clearInterval(this.battleInterval);
       this.battleInterval = null;
     }
   }
 
-  maxStepsCount() {
-    return this.maxSteps;
-  }
-
-  protected wonBattle() {
-    this.stopRound();
-  }
-
-  protected lostBattle() {
-    this.stopRound();
-    super.lostBattle();
-  }
-
   private onStepEnd(step: boolean) {
-    this.stepsArray.push(step)
-    EventsManager.getInstance().emit(EVENTS.battleStep, step)
-    this.restartRound()
+    this.addStep(step)
     if (this.stepsArray.length === this.maxSteps) {
-      this.resetStepLimitTimer()
       this.onRoundEnd()
+    } else {
+      this.restartRound()
     }
-  }
-
-  private updateStepLimitTimer() {
-    this.stepLimitTimer--
-    EventsManager.getInstance().emit(EVENTS.battleStepTimer, this.stepLimitTimer)
-  }
-  
-  private resetStepLimitTimer() {
-    this.stepLimitTimer = this.STEP_LIMIT
-    EventsManager.getInstance().emit(EVENTS.battleStepTimer, this.stepLimitTimer)
-  }
-
-  private restartRound() {
-    this.stopRound()
-    this.startRound()
   }
 
   private onRoundEnd() {
@@ -157,11 +157,53 @@ export class HitTheNumberBattle extends Battle {
     EventsManager.getInstance().emit(EVENTS.battleCurrentNumber, newCurrent)
   }
 
+  private addStep(step: boolean) {
+    this.stepsArray.push(step)
+    EventsManager.getInstance().emit(EVENTS.battleStep, step)
+  }
+
   private getNumber() {
     do {
       this.current = Math.floor(Math.random() * 10);
     } while (this.previous === this.current);
     this.previous = this.current;
     return this.current;
+  }
+}
+
+class BattleTimer {
+  readonly TIMER_LIMIT = 6;
+  timer = this.TIMER_LIMIT;
+  private timerInterval: NodeJS.Timeout | null = null;
+
+  startTimer(interval: number) {
+    this.resetStepLimitTimer()
+    if (this.timerInterval) {
+      this.stopTimer()
+    }
+    this.timerInterval = setInterval(() => {
+      if (this.timer <= 0) {
+        this.stopTimer()
+      } else {
+        this.updateStepLimitTimer()
+      }
+    }, interval)
+  }
+
+  stopTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
+  private updateStepLimitTimer() {
+    this.timer--
+    EventsManager.getInstance().emit(EVENTS.battleTimer, this.timer)
+  }
+  
+  private resetStepLimitTimer() {
+    this.timer = this.TIMER_LIMIT
+    EventsManager.getInstance().emit(EVENTS.battleTimer, this.timer)
   }
 }

@@ -6,7 +6,7 @@ export type Event = 'move'
   | 'increaceStrength'
   | 'battleCurrentNumber'
   | 'battleStep'
-  | 'battleStepTimer'
+  | 'battleTimer'
   | 'battleRoundEnd'
   | 'battleWon'
   | 'gameOver'
@@ -20,7 +20,7 @@ export const EVENTS: Record<Event, Event> = {
   increaceStrength: 'increaceStrength',
   battleCurrentNumber: 'battleCurrentNumber',
   battleStep: 'battleStep',
-  battleStepTimer: 'battleStepTimer',
+  battleTimer: 'battleTimer',
   battleRoundEnd: 'battleRoundEnd',
   battleWon: 'battleWon',
   gameOver: 'gameOver'
