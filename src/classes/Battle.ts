@@ -13,6 +13,14 @@ class Battle {
     this.game = game;
   }
 
+  isHeroAlive() {
+    return this.hero.getHealth() >= 0;
+  }
+
+  isEnemyAlive() {
+    return this.enemy.getHealth() >= 0;
+  }
+
   protected hitEnemy(damageToEnemy: number) {
     if (!damageToEnemy) return
     const damage = this.randomizeDamage(damageToEnemy);
@@ -26,14 +34,6 @@ class Battle {
     if (!this.isHeroAlive()) {
       this.lostBattle()
     }
-  }
-
-  protected isHeroAlive() {
-    return this.hero.getHealth() >= 0;
-  }
-
-  protected isEnemyAlive() {
-    return this.enemy.getHealth() >= 0;
   }
 
   protected lostBattle() {
@@ -134,8 +134,7 @@ export class HitTheNumberBattle extends Battle {
     this.hitHero(damageToHero);
     this.hitEnemy(damageToEnemy);
     this.stepsArray = [];
-    const isBattleEnd = !this.isEnemyAlive() || !this.isHeroAlive();
-    EventsManager.getInstance().emit(EVENTS.battleRoundEnd, isBattleEnd)
+    EventsManager.getInstance().emit(EVENTS.battleRoundEnd)
   }
 
   private calcDamage(count: number, damage: number) {
