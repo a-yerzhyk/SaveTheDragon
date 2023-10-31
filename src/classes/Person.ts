@@ -22,7 +22,7 @@ export default abstract class Person implements PersonConfig {
   private health: number;
   private strength: number;
   private readonly inventory: Inventory;
-  currentLocation: GameLocationConfig | undefined;
+  currentLocation: GameLocationConfig | null = null;
   type: ENEMY | HERO;
 
   constructor (id: PersonID, name: string, health: number, maxHealth: number, strength: number, items: Inventory, type: ENEMY | 'hero' = 'hero') {
@@ -144,6 +144,7 @@ export class Enemy extends Person implements EnemyConfig {
 
   kill() {
     this.currentLocation?.removePerson(this.id)
+    this.currentLocation = null
   }
 }
 

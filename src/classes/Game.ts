@@ -102,7 +102,7 @@ export class GameCreator {
   }
 
   private setHeroLocation(section: SECTION, locationId: number) {
-    this.hero.currentLocation = this.gameMaps.get(section)?.getLocation(locationId)
+    this.hero.currentLocation = this.gameMaps.get(section)?.getLocation(locationId) ?? null
   }
 
   private setEnemyLocation(enemy: Enemy, locationConfig: EnemyC['location']) {

@@ -7,7 +7,7 @@ export type LocationID = number;
 export interface PersonConfig {
   readonly id: PersonID;
   readonly name: string;
-  currentLocation: GameLocationConfig | undefined;
+  currentLocation: GameLocationConfig | null;
   type: ENEMY | HERO,
   getHealth: () => number;
   getStrength: () => number;
