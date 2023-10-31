@@ -79,7 +79,7 @@ export class HitTheNumberBattle extends Battle {
   tryNumber(number: number) {
     if (!this.battleInterval) return
     const success = number === this.current;
-    this.endStep(success)
+    this.onStepEnd(success)
   }
 
   getCurrent () {
@@ -106,10 +106,10 @@ export class HitTheNumberBattle extends Battle {
     super.lostBattle();
   }
 
-  private endStep(step: boolean) {
+  private onStepEnd(step: boolean) {
     this.stepsArray.push(step)
     EventsManager.getInstance().emit(EVENTS.battleStep, step)
-    this.generateNewCurrentNumber()
+    this.restartRound()
     if (this.stepsArray.length === this.maxSteps) {
       this.resetStepLimitTimer()
       this.onRoundEnd()
@@ -124,6 +124,11 @@ export class HitTheNumberBattle extends Battle {
   private resetStepLimitTimer() {
     this.stepLimitTimer = this.STEP_LIMIT
     EventsManager.getInstance().emit(EVENTS.battleStepTimer, this.stepLimitTimer)
+  }
+
+  private restartRound() {
+    this.stopRound()
+    this.startRound()
   }
 
   private onRoundEnd() {
