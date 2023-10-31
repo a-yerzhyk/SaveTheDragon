@@ -14,11 +14,11 @@ class Battle {
   }
 
   isHeroAlive() {
-    return this.hero.getHealth() >= 0;
+    return this.hero.getHealth() > 0;
   }
 
   isEnemyAlive() {
-    return this.enemy.getHealth() >= 0;
+    return this.enemy.getHealth() > 0;
   }
 
   protected hitEnemy(damageToEnemy: number) {
