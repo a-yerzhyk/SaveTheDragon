@@ -67,10 +67,9 @@ export class HitTheNumberBattle extends Battle {
   startRound() {
     this.battleInterval = setInterval(() => {
       if (this.stepLimitTimer <= 0) {
-        this.updateStepsArray(false)
+        this.onRoundEnd()
       } else {
-        const newCurrent = this.getNumber()
-        this.updateCurrent(newCurrent)
+        this.generateNewCurrentNumber()
         this.updateStepLimitTimer()
       }
     }, this.NEW_NUMBER_INTERVAL)
@@ -108,11 +107,11 @@ export class HitTheNumberBattle extends Battle {
 
   private updateStepsArray(step: boolean) {
     this.stepsArray.push(step)
-    this.resetStepLimitTimer()
     EventsManager.getInstance().emit(EVENTS.battleStep, step)
+    this.generateNewCurrentNumber()
     if (this.stepsArray.length === this.maxSteps) {
-      this.stopRound()
-      this.calculateResult()
+      this.resetStepLimitTimer()
+      this.onRoundEnd()
     }
   }
 
@@ -126,10 +125,11 @@ export class HitTheNumberBattle extends Battle {
     EventsManager.getInstance().emit(EVENTS.battleStepTimer, this.stepLimitTimer)
   }
 
-  private calculateResult() {
-    const stepsCount = this.stepsArray.filter(step => step).length;
-    const failCount = this.stepsArray.filter(step => !step).length;
-    const damageToEnemy = this.calcDamage(stepsCount, this.hero.getStrength());
+  private onRoundEnd() {
+    this.stopRound()
+    const successCount = this.stepsArray.filter(step => step).length;
+    const failCount = this.maxSteps - successCount;
+    const damageToEnemy = this.calcDamage(successCount, this.hero.getStrength());
     const damageToHero = this.calcDamage(failCount, this.enemy.getStrength());
     this.hitHero(damageToHero);
     this.hitEnemy(damageToEnemy);
@@ -139,6 +139,11 @@ export class HitTheNumberBattle extends Battle {
 
   private calcDamage(count: number, damage: number) {
     return count === 0 ? 0 : Math.floor(damage + damage * count / 3)
+  }
+
+  private generateNewCurrentNumber() {
+    const newCurrent = this.getNumber()
+    this.updateCurrent(newCurrent)
   }
 
   private updateCurrent (newCurrent: number) {
