@@ -138,7 +138,7 @@ const castleEnemies: Array<Omit<EnemyC, 'id'>> = [
   },
   {
     type: ENEMY.PRINCESS,
-    inventory: [],
+    inventory: [{ id: ITEM.JAIL_KEY, quantity: 1 }],
     location: {
       section: SECTION.CASTLE,
       locationId: 11
