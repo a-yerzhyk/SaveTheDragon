@@ -36,6 +36,13 @@ class Battle {
     }
   }
 
+  protected wonBattle() {
+    const enemyInventory = this.enemy.emptyInventory();
+    enemyInventory.forEach((item) => {
+      this.hero.giveItem(item.itemType, item.quantity);
+    });
+  }
+
   protected lostBattle() {
     this.game.gameOver();
   }
@@ -91,17 +98,13 @@ export class HitTheNumberBattle extends Battle {
   protected wonBattle() {
     this.battleTimer.stopTimer()
     this.stopRound();
+    super.wonBattle();
   }
 
   protected lostBattle() {
     this.battleTimer.stopTimer()
     this.stopRound();
     super.lostBattle();
-  }
-
-  private restartRound() {
-    this.stopRound()
-    this.startRound()
   }
 
   private startStep() {
