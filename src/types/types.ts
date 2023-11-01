@@ -13,7 +13,7 @@ export interface PersonConfig {
   getStrength: () => number;
   getMaxHealth: () => number;
   getInventory: () => Inventory;
-  emptyInventory: () => { itemId: ITEM; quantity: number; }[];
+  emptyInventory: () => { itemType: ITEM; quantity: number; }[];
   giveItem: (itemId: ITEM, quantity?: number) => void;
   hasItem: (itemId: ITEM) => boolean;
   useItem: (itemId: ITEM) => void;

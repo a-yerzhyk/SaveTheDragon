@@ -54,7 +54,7 @@ export default abstract class Person implements PersonConfig {
   emptyInventory() {
     const inventory = this.inventory.map((value) => {
       return {
-        itemId: value.item.type,
+        itemType: value.item.type,
         quantity: value.quantity
       }
     })
@@ -62,26 +62,26 @@ export default abstract class Person implements PersonConfig {
     return inventory;
   }
 
-  hasItem(itemId: ITEM) {
-    const InventoryCell = this.inventory.find(item => item.item.type === itemId)
+  hasItem(itemType: ITEM) {
+    const InventoryCell = this.inventory.find(item => item.item.type === itemType)
     return !!InventoryCell?.quantity;
   }
 
-  giveItem(itemId: ITEM, quantity: number = 1) {
-    const InventoryCell = this.inventory.find(item => item.item.type === itemId)
+  giveItem(itemType: ITEM, quantity: number = 1) {
+    const InventoryCell = this.inventory.find(item => item.item.type === itemType)
     if (InventoryCell) {
       InventoryCell.quantity += quantity;
     } else {
       this.inventory.push({
-        item: GameItemsFactory.createItem(itemId),
+        item: GameItemsFactory.createItem(itemType),
         quantity
       })
     }
     EventsManager.getInstance().emit(EVENTS.giveItem, this.id, this.type, this.inventory)
   }
 
-  useItem(itemId: ITEM) {
-    const InventoryCell = this.inventory.find(item => item.item.type === itemId);
+  useItem(itemType: ITEM) {
+    const InventoryCell = this.inventory.find(item => item.item.type === itemType);
     if (InventoryCell && InventoryCell.quantity) {
       const isUsed = InventoryCell.item.use(this);
       if (!isUsed) return;
@@ -91,7 +91,7 @@ export default abstract class Person implements PersonConfig {
       }
       EventsManager.getInstance().emit(EVENTS.useItem, this.id, this.type, this.inventory)
     } else {
-      console.warn(`You do not have enought ${itemId}!`)
+      console.warn(`You do not have enought ${itemType}!`)
     }
   }
 
