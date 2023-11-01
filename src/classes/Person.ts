@@ -62,6 +62,11 @@ export default abstract class Person implements PersonConfig {
     return inventory;
   }
 
+  hasItem(itemId: ITEM) {
+    const InventoryCell = this.inventory.find(item => item.item.type === itemId)
+    return !!InventoryCell?.quantity;
+  }
+
   giveItem(itemId: ITEM, quantity: number = 1) {
     const InventoryCell = this.inventory.find(item => item.item.type === itemId)
     if (InventoryCell) {
@@ -116,13 +121,17 @@ export default abstract class Person implements PersonConfig {
 }
 
 export class Enemy extends Person implements EnemyConfig {
-  constructor(id: PersonID, inventory: InventoryArray, type: ENEMY) {
+  private movable: boolean;
+
+  constructor(id: PersonID, inventory: InventoryArray, type: ENEMY, movable: boolean = false) {
     const enemyConfig = ENEMIES[type]
     const enemyInventory = createInventory(inventory)
     super(id, enemyConfig.name, enemyConfig.health, enemyConfig.health, enemyConfig.strength, enemyInventory, type);
+    this.movable = movable;
   }
 
   moveRandomly() {
+    if (!this.movable) return
     const location = this.currentLocation
     if (!location) return
     const linkedLocations = location.linkedLocations

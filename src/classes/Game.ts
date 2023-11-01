@@ -86,7 +86,7 @@ export class GameCreator {
 
   private createEnemies(enemiesConfig: EnemyC[]): EnemyConfig[] {
     return enemiesConfig.map(enemyConfig => {
-      const enemy = new Enemy(enemyConfig.id, enemyConfig.inventory, enemyConfig.type)
+      const enemy = new Enemy(enemyConfig.id, enemyConfig.inventory, enemyConfig.type, enemyConfig.movable)
       this.setEnemyLocation(enemy, enemyConfig.location)
       return enemy
     })

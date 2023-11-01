@@ -15,6 +15,7 @@ export interface PersonConfig {
   getInventory: () => Inventory;
   emptyInventory: () => { itemId: ITEM; quantity: number; }[];
   giveItem: (itemId: ITEM, quantity?: number) => void;
+  hasItem: (itemId: ITEM) => boolean;
   useItem: (itemId: ITEM) => void;
   heal: (amount: number) => void;
   damage: (amount: number) => void;
@@ -130,6 +131,7 @@ export type EnemyC = {
   id: PersonID,
   type: ENEMY,
   inventory: InventoryArray,
+  movable?: boolean,
   location: {
     section: SECTION,
     locationId: LocationID
