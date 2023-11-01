@@ -63,7 +63,7 @@ export class GameCreator {
   enemies: EnemyConfig[]
   gameMaps: Map<SECTION, GameMapConfig>
 
-  constructor(config?: GameConfig) {
+  constructor(config?: Partial<GameConfig>) {
     const gameConfig: GameConfig = {
       ...defaultGameConfig,
       ...config,
