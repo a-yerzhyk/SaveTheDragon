@@ -13,6 +13,7 @@ import {
 } from "../types/types.js";
 import { HeroBuilder, Enemy } from "./Person.js";
 import { GameMapGenerator } from './GameMap.js'
+import { SaveGame } from './SaveGame.js'
 
 import { SECTION } from '../config/config.js';
 import { LOCATIONS, CONNECTIONS, TELEPORTS } from '../constants/locations.js';
@@ -48,6 +49,10 @@ export class Game {
     return this.gameMaps.get(section)?.getLocation(locationId)
   }
 
+  saveGame() {
+    return SaveGame.parseToConfig(this.hero, this.enemies)
+  }
+
   gameOver() {
     EventsManager.getInstance().emit(EVENTS.gameOver)
   }
@@ -80,6 +85,7 @@ export class GameCreator {
       .setMaxHealth(heroConfig.maxHealth)
       .setStrength(heroConfig.strength)
       .setItems(heroConfig.inventory)
+      .setDirection(heroConfig.location.direction)
       .build()
     return hero
   }
@@ -115,7 +121,7 @@ export class GameCreator {
   }
 }
 
-const defaultGameConfig = {
+const defaultGameConfig: GameConfig = {
   hero: HERO,
   enemies: ENEMIES,
   locations: LOCATIONS,

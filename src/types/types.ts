@@ -23,12 +23,14 @@ export interface PersonConfig {
 }
 
 export interface HeroConfig extends PersonConfig {
+  getDirection: () => Direction;
   canMove: (direction: Direction) => boolean;
   move: (direction: Direction) => void;
   teleport: (locationId: LocationID) => void;
 }
 
 export interface EnemyConfig extends PersonConfig {
+  readonly movable: boolean;
   moveRandomly: () => void;
 }
 
@@ -123,7 +125,8 @@ export type HeroC = {
   inventory: InventoryArray,
   location: {
     section: SECTION,
-    locationId: LocationID
+    locationId: LocationID,
+    direction: Direction,
   },
 }
 

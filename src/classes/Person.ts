@@ -121,7 +121,7 @@ export default abstract class Person implements PersonConfig {
 }
 
 export class Enemy extends Person implements EnemyConfig {
-  private movable: boolean;
+  readonly movable: boolean;
 
   constructor(id: PersonID, inventory: InventoryArray, type: ENEMY, movable: boolean = false) {
     const enemyConfig = ENEMIES[type]
@@ -158,7 +158,16 @@ export class Enemy extends Person implements EnemyConfig {
 }
 
 export class Hero extends Person implements HeroConfig {
-  currentDirection: Direction = 'l';
+  private currentDirection: Direction;
+
+  constructor (id: PersonID, name: string, health: number, maxHealth: number, strength: number, items: Inventory, direction: Direction) {
+    super(id, name, health, maxHealth, strength, items)
+    this.currentDirection = direction
+  }
+
+  getDirection () {
+    return this.currentDirection
+  }
 
   canMove (direction: Direction) {
     if (!this.currentLocation) return false
@@ -178,7 +187,7 @@ export class Hero extends Person implements HeroConfig {
     if (!target) return
 
     this.currentLocation = target.location
-    this.currentDirection = getOppositeDirection(target.direction)
+    this.setDirection(getOppositeDirection(target.direction))
     EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentDirection)
   }
 
@@ -192,9 +201,13 @@ export class Hero extends Person implements HeroConfig {
       }
       const targetLocation = this.currentLocation.teleport.location
       this.currentLocation = targetLocation
-      this.currentDirection = targetLocation.teleport?.direction || 'l'
+      this.setDirection(targetLocation.teleport?.direction || 'l')
       EventsManager.getInstance().emit(EVENTS.move, this.currentLocation, this.currentDirection)
     }
+  }
+
+  private setDirection (direction: Direction) {
+    this.currentDirection = direction
   }
 }
 
@@ -205,6 +218,7 @@ export class HeroBuilder {
   private maxHealth: number = 0;
   private strength: number = 0;
   private inventory: Inventory = [];
+  private direction: Direction = 'l';
 
   constructor(id: PersonID) {
     this.id = id;
@@ -235,9 +249,13 @@ export class HeroBuilder {
     return this;
   }
 
+  setDirection(direction: Direction) {
+    this.direction = direction;
+    return this;
+  }
 
   build() {
-    return new Hero(this.id, this.name, this.health, this.maxHealth, this.strength, this.inventory);
+    return new Hero(this.id, this.name, this.health, this.maxHealth, this.strength, this.inventory, this.direction);
   }
 }
 

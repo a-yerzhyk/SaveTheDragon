@@ -13,6 +13,7 @@ export const HERO: HeroC = {
   }],
   location: {
     section: SECTION.SUBURB,
-    locationId: 1  
+    locationId: 1,
+    direction: 'l'
   }
 }
