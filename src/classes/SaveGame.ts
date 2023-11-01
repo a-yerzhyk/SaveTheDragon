@@ -25,23 +25,25 @@ export class SaveGame {
   }
 
   private static saveEnemies(enemies: EnemyConfig[]): EnemyC[] {
-    const enemiesConfig = enemies.map(enemy => {
-      return {
-        id: enemy.id,
-        type: enemy.type as ENEMY,
-        inventory: enemy.getInventory().map(item => {
-          return {
-            id: item.item.type,
-            quantity: item.quantity,
+    const enemiesConfig = enemies
+      .filter(enemy => enemy.currentLocation !== null)
+      .map(enemy => {
+        return {
+          id: enemy.id,
+          type: enemy.type as ENEMY,
+          inventory: enemy.getInventory().map(item => {
+            return {
+              id: item.item.type,
+              quantity: item.quantity,
+            }
+          }),
+          movable: enemy.movable,
+          location: {
+            section: enemy.currentLocation?.section as SECTION,
+            locationId: enemy.currentLocation?.id as LocationID,
           }
-        }),
-        movable: enemy.movable,
-        location: {
-          section: enemy.currentLocation?.section as SECTION,
-          locationId: enemy.currentLocation?.id as LocationID,
         }
-      }
-    })
+      })
     return enemiesConfig
   }
 
