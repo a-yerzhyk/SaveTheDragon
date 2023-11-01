@@ -8,6 +8,8 @@ export class GameItemsFactory {
         return new Bread();
       case ITEM.POTION_OF_POWER:
         return new PotionOfPower();
+      case ITEM.JAIL_KEY:
+        return new JailKey();
       default:
         throw new Error(`Item ${item} does not exist!`);
     }
