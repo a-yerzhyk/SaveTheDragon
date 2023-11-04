@@ -10,6 +10,7 @@ export type Event = 'move'
   | 'battleRoundEnd'
   | 'battleWon'
   | 'gameOver'
+  | 'gameWin'
 
 export const EVENTS: Record<Event, Event> = {
   move: 'move',
@@ -23,7 +24,8 @@ export const EVENTS: Record<Event, Event> = {
   battleTimer: 'battleTimer',
   battleRoundEnd: 'battleRoundEnd',
   battleWon: 'battleWon',
-  gameOver: 'gameOver'
+  gameOver: 'gameOver',
+  gameWin: 'gameWin'
 }
 
 export class EventsManager {

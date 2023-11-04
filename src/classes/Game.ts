@@ -15,7 +15,7 @@ import { HeroBuilder, Enemy } from "./Person.js";
 import { GameMapGenerator } from './GameMap.js'
 import { SaveGame } from './SaveGame.js'
 
-import { SECTION } from '../config/config.js';
+import { ITEM, SECTION } from '../config/config.js';
 import { LOCATIONS, CONNECTIONS, TELEPORTS } from '../constants/locations.js';
 import { HERO } from '../constants/hero.js';
 import { ENEMIES } from '../constants/enemies.js';
@@ -25,6 +25,8 @@ export class Game {
   hero: HeroConfig
   enemies: EnemyConfig[]
   gameMaps: Map<SECTION, GameMapConfig>
+  readonly daysToSave: number = 30
+  private currentDay: number = 1
 
   constructor(hero: HeroConfig, enemies: EnemyConfig[], gameMaps: Map<SECTION, GameMapConfig>) {
     this.hero = hero
@@ -35,6 +37,7 @@ export class Game {
   moveHero(direction: Direction) {
     const canMove = this.hero.canMove(direction)
     if (!canMove) return
+    this.nextDay()
     this.enemies.forEach(enemy => {
       enemy.moveRandomly()
     })
@@ -49,12 +52,33 @@ export class Game {
     return this.gameMaps.get(section)?.getLocation(locationId)
   }
 
+  getCurrentDay() {
+    return this.currentDay
+  }
+
   saveGame() {
     return SaveGame.parseToConfig(this.hero, this.enemies)
   }
 
+  saveTheDragon() {
+    if (this.hero.hasItem(ITEM.JAIL_KEY)) {
+      this.winGame()
+    }
+  }
+
   gameOver() {
     EventsManager.getInstance().emit(EVENTS.gameOver)
+  }
+
+  winGame() {
+    EventsManager.getInstance().emit(EVENTS.gameWin)
+  }
+
+  private nextDay() {
+    this.currentDay += 1
+    if (this.currentDay >= this.daysToSave && this.hero.currentLocation?.type !== 'jail') {
+      this.gameOver()
+    }
   }
 }
 
