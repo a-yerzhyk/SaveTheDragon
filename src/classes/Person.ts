@@ -105,7 +105,7 @@ export default abstract class Person implements PersonConfig {
   }
 
   damage(amount: number) {
-    if (amount < 0) return
+    if (amount <= 0) return
     if (this.health <= amount) {
       this.health = 0;
     } else {
