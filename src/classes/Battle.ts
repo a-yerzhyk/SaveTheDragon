@@ -22,13 +22,8 @@ class Battle {
   }
 
   protected hitEnemy(damageToEnemy: number) {
-    console.group('damageToEnemy')
-    console.log('damage', damageToEnemy)
     if (!damageToEnemy) return
-    console.log('damage not returned', !damageToEnemy)
     const damage = this.randomizeDamage(damageToEnemy);
-    console.log('randomized damage', damage)
-    console.groupEnd()
     this.enemy.damage(damage);
     if (!this.isEnemyAlive() && this.isHeroAlive()) {
       this.wonBattle()
@@ -150,16 +145,9 @@ export class HitTheNumberBattle extends Battle {
   private onRoundEnd() {
     this.stopRound()
     const successCount = this.stepsArray.filter(step => step).length;
-    console.group('onRoundEnd')
-    console.log('this.stepsArray', this.stepsArray)
-    console.log('successCount', successCount)
     const failCount = this.maxSteps - successCount;
-    console.log('failCount', failCount)
     const damageToEnemy = this.calcDamage(successCount, this.hero.getStrength());
     const damageToHero = this.calcDamage(failCount, this.enemy.getStrength());
-    console.log('damageToEnemy', damageToEnemy)
-    console.log('damageToHero', damageToHero)
-    console.groupEnd()
     this.hitHero(damageToHero);
     this.hitEnemy(damageToEnemy);
     this.stepsArray = [];
