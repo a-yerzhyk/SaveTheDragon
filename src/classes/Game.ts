@@ -28,10 +28,11 @@ export class Game {
   readonly daysToSave: number = 30
   private currentDay: number = 1
 
-  constructor(hero: HeroConfig, enemies: EnemyConfig[], gameMaps: Map<SECTION, GameMapConfig>) {
+  constructor(hero: HeroConfig, enemies: EnemyConfig[], gameMaps: Map<SECTION, GameMapConfig>, currentDay: number) {
     this.hero = hero
     this.enemies = enemies
     this.gameMaps = gameMaps
+    this.currentDay = currentDay
   }
 
   moveHero(direction: Direction) {
@@ -57,7 +58,7 @@ export class Game {
   }
 
   saveGame() {
-    return SaveGame.parseToConfig(this.hero, this.enemies)
+    return SaveGame.parseToConfig(this.hero, this.enemies, this.currentDay)
   }
 
   saveTheDragon() {
@@ -86,6 +87,7 @@ export class GameCreator {
   hero: HeroConfig
   enemies: EnemyConfig[]
   gameMaps: Map<SECTION, GameMapConfig>
+  currentDay: number = 1
 
   constructor(config?: Partial<GameConfig>) {
     const gameConfig: GameConfig = {
@@ -96,10 +98,11 @@ export class GameCreator {
     this.hero = this.createHero(gameConfig.hero)
     this.enemies = this.createEnemies(gameConfig.enemies)
     this.setHeroLocation(gameConfig.hero.location.section, gameConfig.hero.location.locationId)
+    this.currentDay = gameConfig.currentDay
   }
 
   createGame() {
-    return new Game(this.hero, this.enemies, this.gameMaps)
+    return new Game(this.hero, this.enemies, this.gameMaps, this.currentDay)
   }
 
   private createHero(heroConfig: HeroC): HeroConfig {
@@ -151,4 +154,5 @@ const defaultGameConfig: GameConfig = {
   locations: LOCATIONS,
   locationConnections: CONNECTIONS,
   sectionTeleports: TELEPORTS,
+  currentDay: 1
 }

@@ -142,9 +142,10 @@ export type EnemyC = {
 }
 
 export type GameConfig = {
-  hero: HeroC,
-  enemies: EnemyC[],
-  locations: Record<SECTION, Array<LocationConfig>>,
-  locationConnections: Record<SECTION, Array<LocationConnectionConfig>>,
-  sectionTeleports: Array<LocationTeleportConfig>,
+  hero: HeroC;
+  enemies: EnemyC[];
+  locations: Record<SECTION, Array<LocationConfig>>;
+  locationConnections: Record<SECTION, Array<LocationConnectionConfig>>;
+  sectionTeleports: Array<LocationTeleportConfig>;
+  currentDay: number;
 }

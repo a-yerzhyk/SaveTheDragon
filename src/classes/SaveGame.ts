@@ -47,9 +47,9 @@ export class SaveGame {
     return enemiesConfig
   }
 
-  static parseToConfig(hero: HeroConfig, enemies: EnemyConfig[]) {
+  static parseToConfig(hero: HeroConfig, enemies: EnemyConfig[], currentDay: number) {
     const heroConfig = this.saveHero(hero)
     const enemiesConfig = this.saveEnemies(enemies)
-    return { hero: heroConfig, enemies: enemiesConfig }
+    return { hero: heroConfig, enemies: enemiesConfig, currentDay }
   }
 }
