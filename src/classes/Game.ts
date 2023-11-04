@@ -61,7 +61,7 @@ export class Game {
   }
 
   saveTheDragon() {
-    if (this.hero.hasItem(ITEM.JAIL_KEY)) {
+    if (this.hero.hasItem(ITEM.JAIL_KEY) && this.hero.currentLocation?.personsOnLocation.size === 0) {
       this.winGame()
     }
   }
