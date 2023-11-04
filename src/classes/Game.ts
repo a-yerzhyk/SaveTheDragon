@@ -58,7 +58,7 @@ export class Game {
   }
 
   saveGame() {
-    return SaveGame.parseToConfig(this.hero, this.enemies, this.currentDay)
+    return SaveGame.parseToConfig(this)
   }
 
   saveTheDragon() {

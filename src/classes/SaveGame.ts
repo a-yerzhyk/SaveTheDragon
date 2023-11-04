@@ -1,4 +1,4 @@
-import { ENEMY, SECTION } from '@/index.js';
+import { ENEMY, Game, SECTION } from '@/index.js';
 import { HeroConfig, EnemyConfig, HeroC, EnemyC, LocationID } from '../types/types.js';
 
 export class SaveGame {
@@ -47,9 +47,10 @@ export class SaveGame {
     return enemiesConfig
   }
 
-  static parseToConfig(hero: HeroConfig, enemies: EnemyConfig[], currentDay: number) {
-    const heroConfig = this.saveHero(hero)
-    const enemiesConfig = this.saveEnemies(enemies)
+  static parseToConfig(game: Game) {
+    const heroConfig = this.saveHero(game.hero)
+    const enemiesConfig = this.saveEnemies(game.enemies)
+    const currentDay = game.getCurrentDay()
     return { hero: heroConfig, enemies: enemiesConfig, currentDay }
   }
 }
