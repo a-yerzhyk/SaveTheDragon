@@ -145,9 +145,14 @@ export class HitTheNumberBattle extends Battle {
   private onRoundEnd() {
     this.stopRound()
     const successCount = this.stepsArray.filter(step => step).length;
+    console.log('this.stepsArray', this.stepsArray)
+    console.log('successCount', successCount)
     const failCount = this.maxSteps - successCount;
+    console.log('failCount', failCount)
     const damageToEnemy = this.calcDamage(successCount, this.hero.getStrength());
     const damageToHero = this.calcDamage(failCount, this.enemy.getStrength());
+    console.log('damageToEnemy', damageToEnemy)
+    console.log('damageToHero', damageToHero)
     this.hitHero(damageToHero);
     this.hitEnemy(damageToEnemy);
     this.stepsArray = [];
