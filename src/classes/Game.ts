@@ -67,8 +67,8 @@ export class Game {
     }
   }
 
-  gameOver() {
-    EventsManager.getInstance().emit(EVENTS.gameOver)
+  gameOver(reason: string) {
+    EventsManager.getInstance().emit(EVENTS.gameOver, reason)
   }
 
   winGame() {
@@ -78,7 +78,7 @@ export class Game {
   private nextDay() {
     this.currentDay += 1
     if (this.currentDay >= this.daysToSave && this.hero.currentLocation?.type !== 'jail') {
-      this.gameOver()
+      this.gameOver('You have run out of time! The dragon died of old age!')
     }
   }
 }

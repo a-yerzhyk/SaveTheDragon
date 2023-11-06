@@ -47,7 +47,7 @@ class Battle {
   }
 
   protected lostBattle() {
-    this.game.gameOver();
+    this.game.gameOver('You lost the battle. You are dead!');
   }
 
   private randomizeDamage(damage: number) {
