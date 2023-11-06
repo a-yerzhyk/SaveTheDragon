@@ -20,13 +20,13 @@ export const ITEMS = {
 }
 
 export enum ENEMY {
-  SKELETON = 'skeleton',
-  GNOME = 'gnome',
-  GUARD = 'guard',
-  PRINCESS = 'princess',
+  SKELETON = 'Skeleton',
+  GNOME = 'Gnome',
+  GUARD = 'Guard',
+  PRINCESS = 'Princess',
 }
 
-export type HERO = 'hero';
+export type HERO = 'Hero';
 
 export const ENEMIES = {
   [ENEMY.SKELETON]: {

@@ -1,5 +1,6 @@
 import { ITEM, ITEMS } from '../config/config.js';
 import { GameItemConfig, AbstractGameItemConfig, PersonConfig } from '../types/types.js';
+import { Logger } from './Logger.js';
 
 export class GameItemsFactory {
   static createItem(item: ITEM) {
@@ -25,8 +26,8 @@ export default class GameItem implements AbstractGameItemConfig {
     this.description = description;
   }
 
-  use(hero: PersonConfig) {
-    console.info(`You have used the ${this.label}!`);
+  use(person: PersonConfig) {
+    Logger.getInstance().log(`${person.type} have used the ${this.label}!`);
     return true
   }
 }
@@ -39,13 +40,13 @@ export class Bread extends GameItem implements GameItemConfig {
     super(ITEM.BREAD, `A loaf of bread. Restores ${ITEMS[ITEM.BREAD].heal} health.`);
   }
 
-  use(hero: PersonConfig) {
-    if (hero.getHealth() === hero.getMaxHealth()) {
-      console.warn('You are already at full health!');
+  use(person: PersonConfig) {
+    if (person.getHealth() === person.getMaxHealth()) {
+      Logger.getInstance().log(`You are already at full health!`);
       return false;
     }
-    super.use(hero);
-    hero.heal(this.restoreHealth);
+    super.use(person);
+    person.heal(this.restoreHealth);
     return true;
   }
 }
@@ -70,9 +71,5 @@ export class JailKey extends GameItem implements GameItemConfig {
 
   constructor() {
     super(ITEM.JAIL_KEY, `Key to the jail.`);
-  }
-
-  use() {
-    return true
   }
 }

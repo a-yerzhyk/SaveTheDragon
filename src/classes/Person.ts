@@ -14,6 +14,7 @@ import {
 } from '../types/types.js';
 import { getOppositeDirection } from '../utils/direction.js';
 import { EventsManager, EVENTS } from './EventsManager.js';
+import { Logger } from './Logger.js';
 
 export default abstract class Person implements PersonConfig {
   readonly id: PersonID;
@@ -25,7 +26,7 @@ export default abstract class Person implements PersonConfig {
   currentLocation: GameLocationConfig | null = null;
   type: ENEMY | HERO;
 
-  constructor (id: PersonID, name: string, health: number, maxHealth: number, strength: number, items: Inventory, type: ENEMY | 'hero' = 'hero') {
+  constructor (id: PersonID, name: string, health: number, maxHealth: number, strength: number, items: Inventory, type: ENEMY | HERO = 'Hero') {
     this.id = id;
     this.name = name;
     this.maxHealth = maxHealth;
@@ -78,6 +79,7 @@ export default abstract class Person implements PersonConfig {
       })
     }
     EventsManager.getInstance().emit(EVENTS.giveItem, this.id, this.type, this.inventory)
+    Logger.getInstance().log(`You have received ${quantity} ${itemType}`)
   }
 
   useItem(itemType: ITEM) {
@@ -91,7 +93,7 @@ export default abstract class Person implements PersonConfig {
       }
       EventsManager.getInstance().emit(EVENTS.useItem, this.id, this.type, this.inventory)
     } else {
-      console.warn(`You do not have enought ${itemType}!`)
+      Logger.getInstance().log(`You do not have enought ${itemType}!`)
     }
   }
 
@@ -102,6 +104,7 @@ export default abstract class Person implements PersonConfig {
       this.health = this.maxHealth;
     }
     EventsManager.getInstance().emit(EVENTS.heal, this.id, this.type, this.health)
+    Logger.getInstance().log(`${this.type} healed by ${amount} health!`)
   }
 
   damage(amount: number) {
@@ -112,11 +115,13 @@ export default abstract class Person implements PersonConfig {
       this.health -= amount;
     }
     EventsManager.getInstance().emit(EVENTS.damage, this.id, this.type, this.health)
+    Logger.getInstance().log(`${this.type} have been damaged by ${amount}!`)
   }
 
   increaceStrength(amount: number) {
     this.strength += amount;
     EventsManager.getInstance().emit(EVENTS.increaceStrength, this.id, this.type, this.strength)
+    Logger.getInstance().log(`Strength increased by ${amount}!`)
   }
 }
 
@@ -175,7 +180,7 @@ export class Hero extends Person implements HeroConfig {
     if (!hasDirection) return false
     const enemiesCount = this.currentLocation.personsOnLocation.size
     if (enemiesCount > 0 && direction !== this.currentDirection) {
-      console.warn('Enemy is blocking your way!')
+      Logger.getInstance().log('Enemy is blocking your way!')
       return false
     }
     return true
